@@ -1,19 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "env": {
-    "VITE_API_URL": "@vite_api_url",
-    "VITE_PUSHER_APP_KEY": "@vite_pusher_app_key",
-    "VITE_PUSHER_CLUSTER": "@vite_pusher_cluster"
-  },
-  "routes": [
-    {
-      "src": "/(?!.*\\.)",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(?P<path>.*\\..*)",
-      "dest": "/$path"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
