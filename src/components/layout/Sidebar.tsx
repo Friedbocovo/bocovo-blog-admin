@@ -13,15 +13,22 @@ const navItems = [
   { to: '/profile', label: 'Profil', Icon: Settings, exact: false },
 ]
 
-interface SidebarProps { onToggleNotifications: () => void }
+interface SidebarProps {
+  onToggleNotifications: () => void
+  onNavigate?: () => void
+}
 
-export default function Sidebar({ onToggleNotifications }: SidebarProps) {
+export default function Sidebar({ onToggleNotifications, onNavigate }: SidebarProps) {
   const { user, logout } = useAuthStore()
   const { unreadCount } = useNotificationStore()
 
   const handleLogout = async () => {
     try { await api.post('/auth/logout') } catch { }
     await logout()
+  }
+
+  const handleNavClick = () => {
+    if (onNavigate) onNavigate()
   }
 
   return (
@@ -41,6 +48,7 @@ export default function Sidebar({ onToggleNotifications }: SidebarProps) {
       <nav style={{ flex: 1, padding: '0.625rem 0.5rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1px' }}>
         {navItems.map(({ to, label, Icon, exact }) => (
           <NavLink key={to} to={to} end={exact}
+            onClick={handleNavClick}
             style={({ isActive }: { isActive: boolean }) => ({
               display: 'flex', alignItems: 'center', gap: '0.6rem',
               padding: '0.55rem 0.75rem', borderRadius: '8px',
@@ -49,6 +57,7 @@ export default function Sidebar({ onToggleNotifications }: SidebarProps) {
               backgroundColor: isActive ? 'rgba(26,155,196,0.1)' : 'transparent',
               borderLeft: `2px solid ${isActive ? 'var(--c-cyan)' : 'transparent'}`,
               textDecoration: 'none', transition: 'all 0.15s', whiteSpace: 'nowrap',
+              minHeight: '44px',
             })}>
             <Icon size={16} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{label}</span>
@@ -60,7 +69,7 @@ export default function Sidebar({ onToggleNotifications }: SidebarProps) {
       <div style={{ padding: '0.625rem 0.5rem', borderTop: '1px solid var(--c-border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {/* Notifications */}
         <button onClick={onToggleNotifications}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.55rem 0.75rem', borderRadius: '8px', fontSize: '0.875rem', color: 'var(--c-sub)', backgroundColor: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer', position: 'relative' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.55rem 0.75rem', borderRadius: '8px', fontSize: '0.875rem', color: 'var(--c-sub)', backgroundColor: 'transparent', width: '100%', textAlign: 'left', cursor: 'pointer', position: 'relative', minHeight: '44px' }}
           onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)')}
           onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
           <div style={{ position: 'relative', flexShrink: 0 }}>
@@ -81,7 +90,7 @@ export default function Sidebar({ onToggleNotifications }: SidebarProps) {
 
         {/* User */}
         {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem', borderRadius: '8px', backgroundColor: 'rgba(255,255,255,0.03)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.75rem', borderRadius: '8px', backgroundColor: 'rgba(255,255,255,0.03)', minHeight: '44px' }}>
             <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: 'linear-gradient(135deg, #12769E, #1A9BC4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, color: '#fff' }}>
               {user.name[0].toUpperCase()}
             </div>
@@ -90,7 +99,7 @@ export default function Sidebar({ onToggleNotifications }: SidebarProps) {
               <p style={{ fontSize: '0.68rem', color: 'var(--c-muted)' }}>Admin</p>
             </div>
             <button onClick={handleLogout} title="Se déconnecter"
-              style={{ width: '26px', height: '26px', borderRadius: '6px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(224,82,82,0.1)', color: 'var(--c-red)', cursor: 'pointer' }}>
+              style={{ width: '26px', height: '26px', borderRadius: '6px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(224,82,82,0.1)', color: 'var(--c-red)', cursor: 'pointer', minHeight: '44px', minWidth: '44px' }}>
               <LogOut size={13} strokeWidth={2} />
             </button>
           </div>

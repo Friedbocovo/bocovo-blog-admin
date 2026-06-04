@@ -3,9 +3,12 @@ import axios from 'axios'
 /**
  * Client Axios pour l'app admin.
  * Lit le token depuis le store Zustand (qui le lit lui-même depuis electron-store).
+ * L'URL de base est lue depuis les variables d'environnement VITE_API_URL avec fallback.
  */
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: apiUrl,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

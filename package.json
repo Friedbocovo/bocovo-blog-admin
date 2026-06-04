@@ -3,34 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/electron/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "electron:dev": "NODE_ENV=development electron dist/electron/main.js",
-    "electron:build": "npm run build && electron-builder"
-  },
-  "build": {
-    "appId": "com.blog.admin",
-    "productName": "Blog Admin",
-    "directories": {
-      "output": "dist/packages"
-    },
-    "files": [
-      "dist/renderer/**/*",
-      "dist/electron/**/*"
-    ],
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "target": "dmg"
-    },
-    "linux": {
-      "target": "AppImage"
-    }
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tiptap/extension-blockquote": "^3.25.0",
@@ -40,7 +17,6 @@
     "@tiptap/react": "^3.25.0",
     "@tiptap/starter-kit": "^3.25.0",
     "axios": "^1.17.0",
-    "electron-store": "^11.0.2",
     "laravel-echo": "^2.3.4",
     "lucide-react": "^1.17.0",
     "pusher-js": "^8.5.0",
@@ -57,15 +33,16 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "electron": "^42.3.2",
-    "electron-builder": "^26.8.1",
+    "@vitest/ui": "^4.1.8",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "happy-dom": "^20.10.1",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "vitest": "^4.1.8"
   }
 }
