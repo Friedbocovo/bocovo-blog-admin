@@ -1,4 +1,4 @@
-import { createHashRouter } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -10,9 +10,9 @@ import AboutAdminPage from './pages/AboutAdminPage'
 import ProfileAdminPage from './pages/ProfileAdminPage'
 
 /**
- * HashRouter utilisé pour Electron (compatibilité file://)
+ * BrowserRouter pour l'app web (URLs en /posts au lieu de #/posts)
  */
-const router = createHashRouter([
+const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   {
     element: <AppLayout />,
