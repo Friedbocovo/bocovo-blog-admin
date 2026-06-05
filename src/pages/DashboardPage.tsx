@@ -83,7 +83,7 @@ export default function DashboardPage() {
         <>
           {/* Stats */}
           {stats && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6">
               <StatCard label="Articles publiés" value={stats.published_posts} icon={<FileText size={20} />} onClick={() => navigate('/posts?status=published')} />
               <StatCard label="Brouillons" value={stats.draft_posts} icon={<FileEdit size={20} />} onClick={() => navigate('/posts?status=draft')} />
               <StatCard label="Vues totales" value={stats.total_views} icon={<Eye size={20} />} />
@@ -91,10 +91,10 @@ export default function DashboardPage() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 items-start">
             {/* Graphique */}
             {chartData.length > 0 && (
-              <div style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', padding: 'clamp(1rem, 2vw, 1.25rem)' }}>
+              <div className="lg:col-span-2" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', padding: 'clamp(1rem, 2vw, 1.25rem)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(0.875rem, 3vw, 1rem)', color: 'var(--c-text)' }}>Vues par article</h2>
                   <span style={{ fontSize: '0.72rem', color: 'var(--c-muted)' }}>Top {chartData.length}</span>
@@ -116,7 +116,7 @@ export default function DashboardPage() {
             )}
 
             {/* Articles récents */}
-            <div style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', overflow: 'hidden' }}>
+            <div className="lg:col-span-1" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', overflow: 'hidden' }}>
               <div style={{ padding: 'clamp(0.75rem, 2vw, 1.25rem)', borderBottom: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(0.875rem, 3vw, 1rem)', color: 'var(--c-text)' }}>Derniers articles</h2>
                 <button onClick={() => navigate('/posts')} style={{ fontSize: '0.78rem', color: 'var(--c-cyan)', minHeight: '44px', minWidth: '44px', padding: '0.5rem' }} className="hover:opacity-80 transition-opacity">Voir tout →</button>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Actions rapides */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1.5rem' }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
             {[
               { label: 'Nouvel article', Icon: PenLine, to: '/posts/new', color: 'var(--c-cyan-dim)' },
               { label: 'Commentaires', Icon: MessageSquare, to: '/comments', color: '#7C3AED' },
@@ -175,13 +175,14 @@ export default function DashboardPage() {
               { label: 'Page À propos', Icon: Info, to: '/about', color: '#D97706' },
             ].map(({ label, Icon, to, color }) => (
               <button key={to} onClick={() => navigate(to)}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6rem', padding: 'clamp(0.5rem, 2vw, 0.75rem)', borderRadius: '8px', background: 'var(--c-surface)', border: '1px solid var(--c-border)', color: 'var(--c-sub)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', fontWeight: 500, transition: 'border-color 0.15s, color 0.15s', cursor: 'pointer', minHeight: '44px', minWidth: '44px', flexWrap: 'wrap' }}
+                className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 p-4 rounded-lg hover:shadow-md transition-all duration-200"
+                style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', color: 'var(--c-sub)', fontSize: 'clamp(0.75rem, 2vw, 0.85rem)', fontWeight: 500, minHeight: '80px' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = color; (e.currentTarget as HTMLElement).style.color = 'var(--c-text)' }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--c-border)'; (e.currentTarget as HTMLElement).style.color = 'var(--c-sub)' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: `${color}20`, flexShrink: 0 }}>
                   <Icon size={16} style={{ color }} />
                 </div>
-                <span className="hidden sm:inline">{label}</span>
+                <span className="text-center">{label}</span>
               </button>
             ))}
           </div>

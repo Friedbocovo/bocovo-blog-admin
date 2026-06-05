@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { Send, Search, MoreVertical, ArrowLeft, Phone, Video } from 'lucide-react'
 import api from '../lib/api'
 import { createEcho } from '../lib/echo'
 import useAuthStore from '../stores/authStore'
@@ -13,8 +14,18 @@ export default function ChatPage() {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const echoRef = useRef<ReturnType<typeof createEcho> | null>(null)
+
+  // Détection mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     api.get<Conversation[]>('/conversations')
@@ -71,194 +82,416 @@ export default function ChatPage() {
     }
   }
 
+  const filteredConversations = conversations.filter(conv => 
+    conv.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    conv.last_message.content.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffHours / 24)
+
+    if (diffDays === 0) {
+      return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+    } else if (diffDays === 1) {
+      return 'Hier'
+    } else if (diffDays < 7) {
+      return date.toLocaleDateString('fr-FR', { weekday: 'short' })
+    } else {
+      return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+    }
+  }
+
   if (loading) {
     return (
-      <div className="w-full">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>
-          Messages
-        </h1>
-        <div className="animate-pulse h-96 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }} />
+      <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+            <p className="text-slate-600 font-medium">Chargement des conversations...</p>
+          </div>
+        </div>
       </div>
     )
   }
-
-  return (
-    <div className="w-full">
-      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>
-        Messages
-      </h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
-        {/* Liste des conversations */}
-        <div className="lg:col-span-1 rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-          <div className="px-4 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
-            <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-              Conversations ({conversations.length})
-            </h2>
-          </div>
-          
-          <div className="overflow-y-auto h-full">
-            {conversations.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 px-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-                  <span className="text-2xl">💬</span>
-                </div>
-                <p className="text-sm text-center" style={{ color: 'var(--text-muted)' }}>
-                  Aucune conversation pour le moment
-                </p>
+  // Layout mobile avec navigation
+  if (isMobile) {
+    return (
+      <div className="flex flex-col h-screen bg-white overflow-hidden">
+        {!activeUser ? (
+          // Liste des conversations (mobile)
+          <div className="flex-1 flex flex-col">
+            <div className="bg-white border-b border-slate-200 px-4 py-6">
+              <h1 className="text-2xl font-bold text-slate-900 mb-4">Messages</h1>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Rechercher une conversation..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
-            ) : (
-              <div className="divide-y" style={{ color: 'var(--border)' }}>
-                {conversations.map(conv => (
-                  <button 
-                    key={conv.user.id} 
-                    onClick={() => openConversation(conv.user)}
-                    className={`w-full flex items-center gap-3 p-4 text-left hover:bg-opacity-80 transition-all ${
-                      activeUser?.id === conv.user.id ? 'ring-2 ring-opacity-50' : ''
-                    }`}
-                    style={{ 
-                      backgroundColor: activeUser?.id === conv.user.id ? 'var(--bg-tertiary)' : 'transparent',
-                      ...(activeUser?.id === conv.user.id && { 
-                        '--tw-ring-color': 'var(--accent)' 
-                      } as React.CSSProperties)
-                    }}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <Avatar src={conv.user.avatar} name={conv.user.name} size="md" />
-                      {conv.unread_count > 0 && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: 'var(--danger)', color: 'white' }}>
-                          {conv.unread_count > 9 ? '9+' : conv.unread_count}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
-                          {conv.user.name}
-                        </h3>
-                        <span className="text-xs flex-shrink-0 ml-2" style={{ color: 'var(--text-muted)' }}>
-                          {new Date(conv.last_message.created_at).toLocaleDateString('fr-FR', { 
-                            day: 'numeric', 
-                            month: 'short' 
-                          })}
-                        </span>
-                      </div>
-                      <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
-                        {conv.last_message.content}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Zone de conversation */}
-        <div className="lg:col-span-2 rounded-xl border overflow-hidden flex flex-col" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
-          {activeUser ? (
-            <>
-              {/* Header */}
-              <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: 'var(--border)' }}>
-                <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
-                <div>
-                  <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
-                    {activeUser.name}
-                  </h3>
-                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    {activeUser.email}
-                  </p>
-                </div>
-              </div>
-
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
-                {messages.length === 0 ? (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                      Commencez la conversation...
-                    </p>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto">
+              {filteredConversations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 px-4">
+                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-3xl">💬</span>
                   </div>
-                ) : (
-                  messages.map(m => {
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune conversation</h3>
+                  <p className="text-slate-500 text-center">Les nouvelles conversations apparaîtront ici</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {filteredConversations.map(conv => (
+                    <button 
+                      key={conv.user.id} 
+                      onClick={() => openConversation(conv.user)}
+                      className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="relative">
+                        <Avatar src={conv.user.avatar} name={conv.user.name} size="lg" />
+                        {conv.unread_count > 0 && (
+                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                            {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0 text-left">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-semibold text-slate-900 truncate">{conv.user.name}</h3>
+                          <span className="text-xs text-slate-500 ml-2 flex-shrink-0">
+                            {formatTime(conv.last_message.created_at)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 truncate">
+                          {conv.last_message.content}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          // Vue conversation (mobile)
+          <div className="flex-1 flex flex-col">
+            {/* Header conversation */}
+            <div className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-3">
+              <button 
+                onClick={() => setActiveUser(null)}
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                <ArrowLeft size={20} className="text-slate-600" />
+              </button>
+              <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-slate-900 truncate">{activeUser.name}</h3>
+                <p className="text-sm text-slate-500">En ligne</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                  <Phone size={18} className="text-slate-600" />
+                </button>
+                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                  <Video size={18} className="text-slate-600" />
+                </button>
+                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                  <MoreVertical size={18} className="text-slate-600" />
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 bg-slate-50/50">
+              {messages.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                      <span className="text-2xl">👋</span>
+                    </div>
+                    <p className="text-slate-600">Commencez la conversation avec {activeUser.name}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map(m => {
                     const isSent = m.sender_id === user?.id
                     return (
                       <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-sm px-4 py-2.5 rounded-2xl ${
-                          isSent ? 'rounded-br-md' : 'rounded-bl-md'
-                        }`} style={{
-                          backgroundColor: isSent ? 'var(--accent)' : 'var(--bg-secondary)',
-                          color: isSent ? 'var(--bg-primary)' : 'var(--text-primary)',
-                          border: isSent ? 'none' : '1px solid var(--border)'
-                        }}>
+                        <div className={`max-w-[280px] px-4 py-2 rounded-2xl ${
+                          isSent ? 'bg-blue-500 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-900 rounded-bl-md'
+                        } shadow-sm`}>
                           <p className="text-sm break-words">{m.content}</p>
-                          <div className={`flex items-center gap-2 mt-1 text-xs opacity-70 ${
-                            isSent ? 'justify-end' : 'justify-start'
+                          <div className={`flex items-center gap-2 mt-1 text-xs ${
+                            isSent ? 'text-blue-100 justify-end' : 'text-slate-500 justify-start'
                           }`}>
-                            <span>
-                              {new Date(m.created_at).toLocaleTimeString('fr-FR', { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                              })}
-                            </span>
+                            <span>{formatTime(m.created_at)}</span>
                             {isSent && (
-                              <span>{m.read_at ? '✓✓' : '✓'}</span>
+                              <span className="text-blue-200">
+                                {m.read_at ? '✓✓' : '✓'}
+                              </span>
                             )}
                           </div>
                         </div>
                       </div>
                     )
-                  })
-                )}
-                <div ref={bottomRef} />
-              </div>
-
-              {/* Input */}
-              <form onSubmit={handleSend} className="flex gap-3 p-4 border-t" style={{ borderColor: 'var(--border)' }}>
-                <input 
-                  type="text" 
-                  value={input} 
-                  onChange={e => setInput(e.target.value)}
-                  placeholder="Tapez votre message..."
-                  className="flex-1 px-4 py-3 rounded-lg text-sm outline-none"
-                  style={{ 
-                    backgroundColor: 'var(--bg-tertiary)', 
-                    color: 'var(--text-primary)', 
-                    border: '1px solid var(--border)' 
-                  }}
-                  disabled={sending}
-                />
+                  })}
+                  <div ref={bottomRef} />
+                </div>
+              )}
+            </div>
+            {/* Input mobile - Le footer disparaît sur mobile grâce à la classe hidden */}
+            <div className="bg-white border-t border-slate-200 p-4 md:block hidden">
+              <form onSubmit={handleSend} className="flex gap-3 items-end">
+                <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                  <input 
+                    type="text" 
+                    value={input} 
+                    onChange={e => setInput(e.target.value)}
+                    placeholder="Tapez votre message..."
+                    className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none resize-none"
+                    disabled={sending}
+                  />
+                </div>
                 <button 
                   type="submit" 
                   disabled={sending || !input.trim()}
-                  className="px-6 py-3 rounded-lg text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity flex items-center justify-center min-w-[80px]"
-                  style={{ 
-                    backgroundColor: 'var(--accent)', 
-                    color: 'var(--bg-primary)' 
-                  }}
+                  className="w-12 h-12 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-full flex items-center justify-center transition-colors"
                 >
                   {sending ? (
                     <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    'Envoyer'
+                    <Send size={18} />
                   )}
                 </button>
               </form>
-            </>
-          ) : (
-            <div className="flex-1 flex flex-col items-center justify-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
-                <span className="text-3xl">💬</span>
-              </div>
-              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                Sélectionnez une conversation
-              </h3>
-              <p className="text-sm text-center max-w-sm" style={{ color: 'var(--text-muted)' }}>
-                Choisissez une conversation dans la liste pour commencer à discuter avec vos visiteurs.
-              </p>
             </div>
-          )}
+            
+            {/* Input mobile fixe - Affiché seulement sur mobile */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 safe-area-pb z-50">
+              <form onSubmit={handleSend} className="flex gap-3 items-end">
+                <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                  <input 
+                    type="text" 
+                    value={input} 
+                    onChange={e => setInput(e.target.value)}
+                    placeholder="Tapez votre message..."
+                    className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none resize-none"
+                    disabled={sending}
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={sending || !input.trim()}
+                  className="w-12 h-12 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-full flex items-center justify-center transition-colors"
+                >
+                  {sending ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Send size={18} />
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+  // Layout desktop
+  return (
+    <div className="w-full">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-slate-900">Messages</h1>
+        <p className="text-slate-600 mt-1">Communiquez avec vos visiteurs</p>
+      </div>
+      
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 12rem)' }}>
+        <div className="flex h-full">
+          {/* Sidebar conversations */}
+          <div className="w-80 border-r border-slate-200 flex flex-col bg-slate-50/50">
+            <div className="p-4 border-b border-slate-200 bg-white">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                />
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto">
+              {filteredConversations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 px-4">
+                  <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-2xl">💬</span>
+                  </div>
+                  <p className="text-sm text-slate-600 text-center">
+                    {searchQuery ? 'Aucun résultat trouvé' : 'Aucune conversation'}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  {filteredConversations.map(conv => (
+                    <button 
+                      key={conv.user.id} 
+                      onClick={() => openConversation(conv.user)}
+                      className={`w-full flex items-center gap-3 p-4 text-left hover:bg-white transition-all border-l-4 ${
+                        activeUser?.id === conv.user.id 
+                          ? 'bg-white border-blue-500 shadow-sm' 
+                          : 'border-transparent hover:border-blue-200'
+                      }`}
+                    >
+                      <div className="relative">
+                        <Avatar src={conv.user.avatar} name={conv.user.name} size="md" />
+                        {conv.unread_count > 0 && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                            {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-medium text-slate-900 truncate">{conv.user.name}</h3>
+                          <span className="text-xs text-slate-500 ml-2 flex-shrink-0">
+                            {formatTime(conv.last_message.created_at)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 truncate">
+                          {conv.last_message.content}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Zone de conversation */}
+          <div className="flex-1 flex flex-col">
+            {activeUser ? (
+              <>
+                {/* Header conversation */}
+                <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white">
+                  <div className="flex items-center gap-3">
+                    <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">{activeUser.name}</h3>
+                      <p className="text-sm text-slate-500">{activeUser.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                      <Phone size={18} className="text-slate-600" />
+                    </button>
+                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                      <Video size={18} className="text-slate-600" />
+                    </button>
+                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                      <MoreVertical size={18} className="text-slate-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-slate-50/50 to-white">
+                  {messages.length === 0 ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                          <span className="text-2xl">👋</span>
+                        </div>
+                        <h3 className="font-medium text-slate-900 mb-1">Nouvelle conversation</h3>
+                        <p className="text-slate-600">Commencez la discussion avec {activeUser.name}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {messages.map(m => {
+                        const isSent = m.sender_id === user?.id
+                        return (
+                          <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-md px-4 py-3 rounded-2xl ${
+                              isSent 
+                                ? 'bg-blue-500 text-white rounded-br-md shadow-sm' 
+                                : 'bg-white border border-slate-200 text-slate-900 rounded-bl-md shadow-sm'
+                            }`}>
+                              <p className="break-words leading-relaxed">{m.content}</p>
+                              <div className={`flex items-center gap-2 mt-2 text-xs ${
+                                isSent ? 'text-blue-100 justify-end' : 'text-slate-500 justify-start'
+                              }`}>
+                                <span>{formatTime(m.created_at)}</span>
+                                {isSent && (
+                                  <span className="text-blue-200">
+                                    {m.read_at ? '✓✓' : '✓'}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                      <div ref={bottomRef} />
+                    </div>
+                  )}
+                </div>
+                {/* Input desktop */}
+                <div className="p-4 border-t border-slate-200 bg-white">
+                  <form onSubmit={handleSend} className="flex gap-4 items-end">
+                    <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+                      <input 
+                        type="text" 
+                        value={input} 
+                        onChange={e => setInput(e.target.value)}
+                        placeholder="Tapez votre message..."
+                        className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none"
+                        disabled={sending}
+                      />
+                    </div>
+                    <button 
+                      type="submit" 
+                      disabled={sending || !input.trim()}
+                      className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      {sending ? (
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          <Send size={16} />
+                          Envoyer
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-slate-50/50 to-white">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+                    <span className="text-3xl">💬</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Sélectionnez une conversation</h3>
+                  <p className="text-slate-600 max-w-sm">
+                    Choisissez une conversation dans la liste pour commencer à discuter avec vos visiteurs.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { X, Bell, CheckCheck } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import useNotificationStore from '../../stores/notificationStore'
 import api from '../../lib/api'
 import type { Notification } from '../../types'
@@ -16,6 +17,7 @@ function getIcon(type: string) {
 
 export default function NotificationPanel({ onClose }: Props) {
   const { notifications, unreadCount, markRead, markAllRead } = useNotificationStore()
+  const navigate = useNavigate()
 
   const handleMarkRead = async (id: string) => {
     try { await api.patch(`/notifications/${id}/read`) } catch { }
@@ -25,6 +27,43 @@ export default function NotificationPanel({ onClose }: Props) {
   const handleMarkAllRead = async () => {
     try { await api.patch('/notifications/read-all') } catch { }
     markAllRead()
+  }
+
+  const handleNotificationClick = (notification: Notification) => {
+    // Marquer comme lu si pas déjà lu
+    if (!notification.read_at) {
+      handleMarkRead(notification.id)
+    }
+
+    // Navigation en fonction du type de notification
+    const { type, post_id } = notification.data
+
+    switch (type) {
+      case 'new_comment':
+      case 'comment_reply':
+        // Rediriger vers la page des commentaires
+        navigate('/comments')
+        break
+      case 'new_message':
+        // Rediriger vers la page des messages
+        navigate('/chat')
+        break
+      case 'new_like':
+        // Rediriger vers la page d'édition de l'article
+        if (post_id) {
+          navigate(`/posts/${post_id}/edit`)
+        } else {
+          navigate('/posts')
+        }
+        break
+      default:
+        // Pour les autres types, rediriger vers le dashboard
+        navigate('/')
+        break
+    }
+
+    // Fermer le panel après navigation
+    onClose()
   }
 
   return (
@@ -73,14 +112,17 @@ export default function NotificationPanel({ onClose }: Props) {
           ) : (
             notifications.map((n: Notification) => (
               <div key={n.id}
-                onClick={() => !n.read_at && handleMarkRead(n.id)}
+                onClick={() => handleNotificationClick(n)}
                 style={{
                   display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
                   padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--c-border)',
-                  cursor: n.read_at ? 'default' : 'pointer',
+                  cursor: 'pointer',
                   background: !n.read_at ? 'rgba(26,155,196,0.05)' : 'transparent',
                   transition: 'background 0.15s',
-                }}>
+                }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = !n.read_at ? 'rgba(26,155,196,0.1)' : 'var(--c-surface2)'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = !n.read_at ? 'rgba(26,155,196,0.05)' : 'transparent'}
+              >
                 <div style={{ width: '30px', height: '30px', borderRadius: '50%', flexShrink: 0, background: 'var(--c-surface2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--c-cyan)', marginTop: '1px' }}>
                   {getIcon(n.data.type)}
                 </div>
