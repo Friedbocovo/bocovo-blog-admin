@@ -49,7 +49,7 @@ export default function ProfileAdminPage() {
   }
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 0.5rem' }}>
       <div style={{ marginBottom: '1.75rem' }}>
         <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '1.5rem', color: 'var(--c-text)' }}>Mon profil</h1>
         <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '2px' }}>Gérez vos informations personnelles</p>

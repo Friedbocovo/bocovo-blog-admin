@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
 import NotificationPanel from './NotificationPanel'
 import useAuthStore from '../../stores/authStore'
@@ -9,11 +9,25 @@ import { createEcho } from '../../lib/echo'
 import api from '../../lib/api'
 import type { Notification } from '../../types'
 
+// Breakpoint à partir duquel la sidebar est toujours visible
+const DESKTOP_BREAKPOINT = 768
+
 export default function AppLayout() {
   const { token, user } = useAuthStore()
   const { setNotifications, addNotification } = useNotificationStore()
   const [showNotifications, setShowNotifications] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= DESKTOP_BREAKPOINT)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= DESKTOP_BREAKPOINT
+      setIsDesktop(desktop)
+      if (desktop) setSidebarOpen(false)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     if (!token) return
@@ -34,16 +48,16 @@ export default function AppLayout() {
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--c-bg)' }}>
 
-      {/* ── SIDEBAR desktop : toujours visible ≥ 768px ── */}
-      <div className="hidden md:flex md:flex-shrink-0">
+      {/* ── SIDEBAR desktop : toujours visible ── */}
+      {isDesktop && (
         <Sidebar
           onToggleNotifications={() => setShowNotifications(v => !v)}
           onNavigate={() => {}}
         />
-      </div>
+      )}
 
       {/* ── SIDEBAR mobile : drawer ── */}
-      {sidebarOpen && (
+      {!isDesktop && sidebarOpen && (
         <>
           <div
             style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 40 }}
@@ -61,28 +75,31 @@ export default function AppLayout() {
       {/* ── CONTENU PRINCIPAL ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
-        {/* Header mobile */}
-        <div
-          className="md:hidden"
-          style={{
+        {/* Header mobile — visible uniquement sur petits écrans */}
+        {!isDesktop && (
+          <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '0 1rem', height: '56px', flexShrink: 0,
             backgroundColor: 'var(--c-surface)', borderBottom: '1px solid var(--c-border)',
-          }}
-        >
-          <button
-            onClick={() => setSidebarOpen(true)}
-            style={{ width: '40px', height: '40px', borderRadius: '8px', border: 'none', backgroundColor: 'transparent', color: 'var(--c-text)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-          <h1 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--c-text)', margin: 0 }}>Admin</h1>
-          <div style={{ width: '40px' }} />
-        </div>
+          }}>
+            <button
+              onClick={() => setSidebarOpen(v => !v)}
+              style={{
+                width: '40px', height: '40px', borderRadius: '8px', border: 'none',
+                backgroundColor: 'transparent', color: 'var(--c-text)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Menu size={22} />
+            </button>
+            <h1 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--c-text)', margin: 0 }}>Admin</h1>
+            <div style={{ width: '40px' }} />
+          </div>
+        )}
 
         {/* Page content */}
         <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-          <main style={{ padding: '1.5rem 2rem', minHeight: '100%' }}>
+          <main style={{ padding: '1.5rem', minHeight: '100%' }}>
             <Outlet />
           </main>
         </div>
