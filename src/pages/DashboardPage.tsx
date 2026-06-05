@@ -91,10 +91,10 @@ export default function DashboardPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
+          <div style={{ display: 'grid', gridTemplateColumns: '3fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
             {/* Graphique */}
             {chartData.length > 0 && (
-              <div className="lg:col-span-3" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', padding: 'clamp(1rem, 2vw, 1.25rem)' }}>
+              <div style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', padding: 'clamp(1rem, 2vw, 1.25rem)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(0.875rem, 3vw, 1rem)', color: 'var(--c-text)' }}>Vues par article</h2>
                   <span style={{ fontSize: '0.72rem', color: 'var(--c-muted)' }}>Top {chartData.length}</span>
@@ -116,7 +116,7 @@ export default function DashboardPage() {
             )}
 
             {/* Articles récents */}
-            <div className="lg:col-span-1" style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', overflow: 'hidden' }}>
+            <div style={{ background: 'var(--c-surface)', border: '1px solid var(--c-border)', borderRadius: '10px', overflow: 'hidden' }}>
               <div style={{ padding: 'clamp(0.75rem, 2vw, 1.25rem)', borderBottom: '1px solid var(--c-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(0.875rem, 3vw, 1rem)', color: 'var(--c-text)' }}>Derniers articles</h2>
                 <button onClick={() => navigate('/posts')} style={{ fontSize: '0.78rem', color: 'var(--c-cyan)', minHeight: '44px', minWidth: '44px', padding: '0.5rem' }} className="hover:opacity-80 transition-opacity">Voir tout →</button>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Actions rapides */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-6 md:mt-8">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', marginTop: '1.5rem' }}>
             {[
               { label: 'Nouvel article', Icon: PenLine, to: '/posts/new', color: 'var(--c-cyan-dim)' },
               { label: 'Commentaires', Icon: MessageSquare, to: '/comments', color: '#7C3AED' },
