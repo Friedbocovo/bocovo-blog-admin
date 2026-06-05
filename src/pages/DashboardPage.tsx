@@ -64,7 +64,7 @@ export default function DashboardPage() {
   const recentPosts = [...posts].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
 
   return (
-    <div className="px-4 py-3 md:px-6 md:py-4 lg:px-8 lg:py-6 max-w-7xl mx-auto">
+    <div>
       {/* Header */}
       <div className="mb-7">
         <h1 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(1.25rem, 5vw, 1.6rem)', color: 'var(--c-text)' }}>Dashboard</h1>
