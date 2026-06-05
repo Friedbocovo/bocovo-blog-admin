@@ -66,7 +66,7 @@ export default function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-7">
+      <div style={{ marginBottom: '1.5rem' }}>
         <h1 style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(1.25rem, 5vw, 1.6rem)', color: 'var(--c-text)' }}>Dashboard</h1>
         <p style={{ fontSize: '0.85rem', color: 'var(--c-muted)', marginTop: '0.2rem' }}>
           Vue d'ensemble — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -83,7 +83,7 @@ export default function DashboardPage() {
         <>
           {/* Stats */}
           {stats && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
               <StatCard label="Articles publiés" value={stats.published_posts} icon={<FileText size={20} />} onClick={() => navigate('/posts?status=published')} />
               <StatCard label="Brouillons" value={stats.draft_posts} icon={<FileEdit size={20} />} onClick={() => navigate('/posts?status=draft')} />
               <StatCard label="Vues totales" value={stats.total_views} icon={<Eye size={20} />} />
