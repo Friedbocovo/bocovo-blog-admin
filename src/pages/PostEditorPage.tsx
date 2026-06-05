@@ -20,6 +20,7 @@ export default function PostEditorPage() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [coverFile, setCoverFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [preview, setPreview] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -60,6 +61,7 @@ export default function PostEditorPage() {
     if (!title.trim()) return
     const statusToSave = status ?? currentStatus
     setSaving(true)
+    setSaveError(null)
     try {
       const formData = new FormData()
       formData.append('title', title)
@@ -74,7 +76,10 @@ export default function PostEditorPage() {
         await api.post('/admin/posts', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       }
       navigate('/posts')
-    } catch { } finally { setSaving(false) }
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || e?.message || 'Erreur lors de la sauvegarde'
+      setSaveError(msg)
+    } finally { setSaving(false) }
   }
 
   const handleAddTag = () => {
@@ -90,6 +95,11 @@ export default function PostEditorPage() {
 
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+      {saveError && (
+        <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(224,82,82,0.1)', color: 'var(--c-red)', border: '1px solid rgba(224,82,82,0.2)', fontSize: '0.875rem' }}>
+          ⚠️ {saveError}
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
