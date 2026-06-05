@@ -13,6 +13,7 @@ export default function PostEditorPage() {
   const [title, setTitle] = useState('')
   const [excerpt, setExcerpt] = useState('')
   const [content, setContent] = useState('')
+  const [currentStatus, setCurrentStatus] = useState<'draft' | 'published'>('draft')
   const [selectedTags, setSelectedTags] = useState<number[]>([])
   const [newTagName, setNewTagName] = useState('')
   const [allTags, setAllTags] = useState<TagType[]>([])
@@ -40,6 +41,7 @@ export default function PostEditorPage() {
         setTitle(r.data.title)
         setExcerpt(r.data.excerpt ?? '')
         setContent(r.data.content)
+        setCurrentStatus(r.data.status as 'draft' | 'published')
         setSelectedTags(r.data.tags?.map(t => t.id) ?? [])
         if (r.data.cover_image) setCoverPreview(r.data.cover_image)
       })
@@ -54,15 +56,16 @@ export default function PostEditorPage() {
     reader.readAsDataURL(file)
   }
 
-  const handleSave = async (status: 'draft' | 'published') => {
+  const handleSave = async (status?: 'draft' | 'published') => {
     if (!title.trim()) return
+    const statusToSave = status ?? currentStatus
     setSaving(true)
     try {
       const formData = new FormData()
       formData.append('title', title)
       formData.append('excerpt', excerpt)
       formData.append('content', content)
-      formData.append('status', status)
+      formData.append('status', statusToSave)
       selectedTags.forEach(id => formData.append('tags[]', String(id)))
       if (coverFile) formData.append('cover_image', coverFile)
       if (isEdit && id) {
@@ -102,6 +105,12 @@ export default function PostEditorPage() {
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: preview ? 'rgba(26,155,196,0.15)' : 'var(--c-surface)', color: preview ? 'var(--c-cyan)' : 'var(--c-sub)', border: `1px solid ${preview ? 'var(--c-cyan-dim)' : 'var(--c-border)'}`, cursor: 'pointer' }}>
             {preview ? <><EyeOff size={14} /> Éditer</> : <><Eye size={14} /> Aperçu</>}
           </button>
+          {isEdit && (
+            <button onClick={() => handleSave()} disabled={saving}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(29,184,122,0.15)', color: 'var(--c-green)', border: '1px solid rgba(29,184,122,0.3)', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
+              <Save size={14} /> Enregistrer
+            </button>
+          )}
           <button onClick={() => handleSave('draft')} disabled={saving}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: 'var(--c-surface)', color: 'var(--c-sub)', border: '1px solid var(--c-border)', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
             <Save size={14} /> Brouillon
