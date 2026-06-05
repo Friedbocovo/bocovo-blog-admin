@@ -83,7 +83,7 @@ export default function DashboardPage() {
         <>
           {/* Stats */}
           {stats && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
               <StatCard label="Articles publiés" value={stats.published_posts} icon={<FileText size={20} />} onClick={() => navigate('/posts?status=published')} />
               <StatCard label="Brouillons" value={stats.draft_posts} icon={<FileEdit size={20} />} onClick={() => navigate('/posts?status=draft')} />
               <StatCard label="Vues totales" value={stats.total_views} icon={<Eye size={20} />} />
