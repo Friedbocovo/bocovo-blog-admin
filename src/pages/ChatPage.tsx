@@ -107,12 +107,14 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
-            <p className="text-slate-600 font-medium">Chargement des conversations...</p>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
+          <p className="text-slate-600">Communiquez avec vos visiteurs</p>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
+          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 font-medium">Chargement des conversations...</p>
         </div>
       </div>
     )
@@ -309,10 +311,10 @@ export default function ChatPage() {
   }
   // Layout desktop
   return (
-    <div className="w-full">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900">Messages</h1>
-        <p className="text-slate-600 mt-1">Communiquez avec vos visiteurs</p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
+        <p className="text-slate-600">Communiquez avec vos visiteurs</p>
       </div>
       
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 12rem)' }}>

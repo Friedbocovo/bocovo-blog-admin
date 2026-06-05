@@ -120,11 +120,11 @@ export default function CommentsPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900">Commentaires</h1>
-        <p className="text-slate-600 mt-1">Gérez et répondez aux commentaires de vos visiteurs</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Commentaires</h1>
+        <p className="text-slate-600">Gérez et répondez aux commentaires de vos visiteurs</p>
       </div>
 
       {/* Filtres et recherche */}
