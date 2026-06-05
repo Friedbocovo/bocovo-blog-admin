@@ -74,7 +74,8 @@ The DashboardPage has been successfully updated to implement a responsive layout
 
 ### ✅ Responsive Padding
 - [x] Main container: `px-4 py-3 md:px-6 md:py-4 lg:px-8 lg:py-6`
-- [x] Content sections: `padding: 'clamp(0.75rem, 2vw, 1.25rem)'` for various sizes
+- [x] Content sections: `padding: 'clamp(0.?
+75rem, 2vw, 1.25rem)'` for various sizes
 - [x] Header margin: Responsive with `mb-7`
 
 ### ✅ Responsive Gap
@@ -207,7 +208,7 @@ Expected behavior:
 
 ### ✅ Requirement 5: Maintain All Existing Functionality
 
-**Acceptance Criteria 1**: "THE Dashboard page SHALL display statistics cards showing post count, comment count, and user metrics using data from Blog_API"
+**Acceptance Criteria 1**: "THE Dashboard page SHALL display statistics cards showing post count, comment count, and user mca marche toujour pas etrics using data from Blog_API"
 - ✅ Stats cards displayed with responsive grid
 - ✅ All four stats visible: published posts, drafts, total views, total likes
 - ✅ Data from API maintained

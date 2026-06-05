@@ -40,7 +40,7 @@ export default function Sidebar({ onToggleNotifications, onNavigate }: SidebarPr
     }}>
       {/* Logo */}
       <div style={{ padding: '1.1rem 1rem', borderBottom: '1px solid var(--c-border)', display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
-        <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'linear-gradient(135deg, #12769E, #1A9BC4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, color: '#fff', flexShrink: 0 }}>A</div>
+        <img src="/favicon.png" alt="Blog Logo" style={{ width: '28px', height: '28px', borderRadius: '6px', flexShrink: 0, objectFit: 'cover' }} />
         <span style={{ fontFamily: 'var(--font-head)', fontSize: '1rem', fontWeight: 700, color: 'var(--c-text)', whiteSpace: 'nowrap' }}>Admin</span>
       </div>
 

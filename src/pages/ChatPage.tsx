@@ -12,13 +12,18 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
+  const [loading, setLoading] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
   const echoRef = useRef<ReturnType<typeof createEcho> | null>(null)
 
   useEffect(() => {
     api.get<Conversation[]>('/conversations')
-      .then(r => setConversations(Array.isArray(r.data) ? r.data : []))
-      .catch(() => {})
+      .then(r => {
+        const data = Array.isArray(r.data) ? r.data : []
+        setConversations(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -50,104 +55,211 @@ export default function ChatPage() {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim() || !activeUser) return
+    if (!input.trim() || !activeUser || sending) return
     setSending(true)
     try {
-      const r = await api.post<Message>('/messages', { receiver_id: activeUser.id, content: input.trim() })
-      setMessages(prev => [...prev, r.data]); setInput('')
-    } catch { } finally { setSending(false) }
+      const r = await api.post<Message>('/messages', { 
+        receiver_id: activeUser.id, 
+        content: input.trim() 
+      })
+      setMessages(prev => [...prev, r.data])
+      setInput('')
+    } catch { 
+      // Afficher une erreur si nécessaire
+    } finally { 
+      setSending(false) 
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>
+          Messages
+        </h1>
+        <div className="animate-pulse h-96 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)' }} />
+      </div>
+    )
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
-      {/* Sidebar conversations */}
-      <div className="w-72 flex-shrink-0 flex flex-col" style={{ backgroundColor: 'var(--bg-secondary)', borderRight: '1px solid var(--border)' }}>
-        <div className="px-4 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-          <h2 className="text-sm font-bold" style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>Messages</h2>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          {conversations.length === 0
-            ? <p className="text-xs text-center py-8" style={{ color: 'var(--text-muted)' }}>Aucune conversation</p>
-            : conversations.map(conv => (
-              <button key={conv.user.id} onClick={() => openConversation(conv.user)}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:opacity-80"
-                style={{ backgroundColor: activeUser?.id === conv.user.id ? 'rgba(18,118,158,0.15)' : 'transparent', borderBottom: '1px solid var(--border)', borderLeft: activeUser?.id === conv.user.id ? '2px solid var(--accent-light)' : '2px solid transparent' }}>
-                <Avatar src={conv.user.avatar} name={conv.user.name} size="sm" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{conv.user.name}</span>
-                    {conv.unread_count > 0 && (
-                      <span className="w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold flex-shrink-0"
-                        style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-light))', color: 'var(--cream)' }}>
-                        {conv.unread_count}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>{conv.last_message.content}</p>
+    <div className="w-full">
+      <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6" style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-primary)' }}>
+        Messages
+      </h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+        {/* Liste des conversations */}
+        <div className="lg:col-span-1 rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          <div className="px-4 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
+            <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+              Conversations ({conversations.length})
+            </h2>
+          </div>
+          
+          <div className="overflow-y-auto h-full">
+            {conversations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 px-4">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                  <span className="text-2xl">💬</span>
                 </div>
-              </button>
-            ))
-          }
-        </div>
-      </div>
-
-      {/* Zone messages */}
-      <div className="flex-1 flex flex-col" style={{ backgroundColor: 'var(--bg-primary)' }}>
-        {activeUser ? (
-          <>
-            <div className="flex items-center gap-3 px-4 py-3" style={{ backgroundColor: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
-              <Avatar src={activeUser.avatar} name={activeUser.name} size="sm" />
-              <div>
-                <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{activeUser.name}</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{activeUser.email}</p>
+                <p className="text-sm text-center" style={{ color: 'var(--text-muted)' }}>
+                  Aucune conversation pour le moment
+                </p>
               </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {messages.map(m => {
-                const isSent = m.sender_id === user?.id
-                return (
-                  <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
-                    <div className="max-w-xs sm:max-w-sm px-4 py-2.5 rounded-2xl"
-                      style={{
-                        background: isSent ? 'linear-gradient(135deg, var(--accent), var(--accent-light))' : 'var(--bg-secondary)',
-                        color: isSent ? 'var(--cream)' : 'var(--text-primary)',
-                        border: isSent ? 'none' : '1px solid var(--border)',
-                        borderBottomRightRadius: isSent ? '4px' : undefined,
-                        borderBottomLeftRadius: !isSent ? '4px' : undefined,
-                      }}>
-                      <p className="text-sm break-words">{m.content}</p>
-                      <p className={`text-xs mt-1 opacity-60 ${isSent ? 'text-right' : ''}`}>
-                        {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                        {isSent && m.read_at && ' ✓✓'}
+            ) : (
+              <div className="divide-y" style={{ color: 'var(--border)' }}>
+                {conversations.map(conv => (
+                  <button 
+                    key={conv.user.id} 
+                    onClick={() => openConversation(conv.user)}
+                    className={`w-full flex items-center gap-3 p-4 text-left hover:bg-opacity-80 transition-all ${
+                      activeUser?.id === conv.user.id ? 'ring-2 ring-opacity-50' : ''
+                    }`}
+                    style={{ 
+                      backgroundColor: activeUser?.id === conv.user.id ? 'var(--bg-tertiary)' : 'transparent',
+                      ...(activeUser?.id === conv.user.id && { 
+                        '--tw-ring-color': 'var(--accent)' 
+                      } as React.CSSProperties)
+                    }}
+                  >
+                    <div className="relative flex-shrink-0">
+                      <Avatar src={conv.user.avatar} name={conv.user.name} size="md" />
+                      {conv.unread_count > 0 && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: 'var(--danger)', color: 'white' }}>
+                          {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                          {conv.user.name}
+                        </h3>
+                        <span className="text-xs flex-shrink-0 ml-2" style={{ color: 'var(--text-muted)' }}>
+                          {new Date(conv.last_message.created_at).toLocaleDateString('fr-FR', { 
+                            day: 'numeric', 
+                            month: 'short' 
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
+                        {conv.last_message.content}
                       </p>
                     </div>
-                  </div>
-                )
-              })}
-              <div ref={bottomRef} />
-            </div>
-
-            <form onSubmit={handleSend} className="flex gap-2 p-4" style={{ borderTop: '1px solid var(--border)' }}>
-              <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Votre message…"
-                className="flex-1 px-4 py-3 rounded-xl text-sm outline-none"
-                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} />
-              <button type="submit" disabled={sending || !input.trim()}
-                className="px-5 py-3 rounded-xl text-sm font-bold disabled:opacity-40 hover:opacity-80 transition-opacity flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, var(--accent), var(--accent-light))', color: 'var(--cream)' }}>
-                {sending ? '…' : '→'}
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center gap-4">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-              style={{ backgroundColor: 'rgba(18,118,158,0.1)', border: '1px solid var(--border)' }}>
-              ✉️
-            </div>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Sélectionnez une conversation</p>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
+
+        {/* Zone de conversation */}
+        <div className="lg:col-span-2 rounded-xl border overflow-hidden flex flex-col" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border)' }}>
+          {activeUser ? (
+            <>
+              {/* Header */}
+              <div className="flex items-center gap-3 p-4 border-b" style={{ borderColor: 'var(--border)' }}>
+                <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
+                <div>
+                  <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {activeUser.name}
+                  </h3>
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    {activeUser.email}
+                  </p>
+                </div>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ backgroundColor: 'var(--bg-primary)' }}>
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                      Commencez la conversation...
+                    </p>
+                  </div>
+                ) : (
+                  messages.map(m => {
+                    const isSent = m.sender_id === user?.id
+                    return (
+                      <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-sm px-4 py-2.5 rounded-2xl ${
+                          isSent ? 'rounded-br-md' : 'rounded-bl-md'
+                        }`} style={{
+                          backgroundColor: isSent ? 'var(--accent)' : 'var(--bg-secondary)',
+                          color: isSent ? 'var(--bg-primary)' : 'var(--text-primary)',
+                          border: isSent ? 'none' : '1px solid var(--border)'
+                        }}>
+                          <p className="text-sm break-words">{m.content}</p>
+                          <div className={`flex items-center gap-2 mt-1 text-xs opacity-70 ${
+                            isSent ? 'justify-end' : 'justify-start'
+                          }`}>
+                            <span>
+                              {new Date(m.created_at).toLocaleTimeString('fr-FR', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
+                            </span>
+                            {isSent && (
+                              <span>{m.read_at ? '✓✓' : '✓'}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Input */}
+              <form onSubmit={handleSend} className="flex gap-3 p-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                <input 
+                  type="text" 
+                  value={input} 
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Tapez votre message..."
+                  className="flex-1 px-4 py-3 rounded-lg text-sm outline-none"
+                  style={{ 
+                    backgroundColor: 'var(--bg-tertiary)', 
+                    color: 'var(--text-primary)', 
+                    border: '1px solid var(--border)' 
+                  }}
+                  disabled={sending}
+                />
+                <button 
+                  type="submit" 
+                  disabled={sending || !input.trim()}
+                  className="px-6 py-3 rounded-lg text-sm font-medium disabled:opacity-50 hover:opacity-90 transition-opacity flex items-center justify-center min-w-[80px]"
+                  style={{ 
+                    backgroundColor: 'var(--accent)', 
+                    color: 'var(--bg-primary)' 
+                  }}
+                >
+                  {sending ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    'Envoyer'
+                  )}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--bg-tertiary)' }}>
+                <span className="text-3xl">💬</span>
+              </div>
+              <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
+                Sélectionnez une conversation
+              </h3>
+              <p className="text-sm text-center max-w-sm" style={{ color: 'var(--text-muted)' }}>
+                Choisissez une conversation dans la liste pour commencer à discuter avec vos visiteurs.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
