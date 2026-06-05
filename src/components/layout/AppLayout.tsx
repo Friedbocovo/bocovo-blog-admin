@@ -97,9 +97,8 @@ export default function AppLayout() {
           height: '100vh',
           zIndex: 50,
           transition: 'transform 0.3s ease-in-out',
-          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         }}
-        className="md:relative md:translate-x-0"
+        className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 md:static md:z-auto`}
       >
         <Sidebar
           onToggleNotifications={() => setShowNotifications(v => !v)}
