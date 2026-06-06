@@ -101,7 +101,7 @@ export default function PostEditorPage() {
         </div>
       )}
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+      <div style={{ marginBottom: '1.5rem' }}>
         <div>
           <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>
             {isEdit ? 'Modifier l\'article' : 'Nouvel article'}
@@ -110,7 +110,9 @@ export default function PostEditorPage() {
             {isEdit ? 'Modifiez et sauvegardez vos modifications' : 'Rédigez et publiez un nouvel article'}
           </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        
+        {/* Boutons d'action - repositionnés */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
           <button onClick={() => setPreview(v => !v)}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: preview ? 'rgba(26,155,196,0.15)' : 'var(--c-surface)', color: preview ? 'var(--c-cyan)' : 'var(--c-sub)', border: `1px solid ${preview ? 'var(--c-cyan-dim)' : 'var(--c-border)'}`, cursor: 'pointer' }}>
             {preview ? <><EyeOff size={14} /> Éditer</> : <><Eye size={14} /> Aperçu</>}
@@ -152,25 +154,6 @@ export default function PostEditorPage() {
             ) : (
               <>
                 <Save size={14} /> Brouillon
-              </>
-            )}
-          </button>
-          <button onClick={() => handleSave('published')} disabled={saving}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1.1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: saving ? 'var(--c-surface2)' : 'var(--c-cyan-dim)', color: saving ? 'var(--c-muted)' : '#fff', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
-            {saving ? (
-              <>
-                <div style={{
-                  width: '14px',
-                  height: '14px',
-                  border: '2px solid currentColor',
-                  borderTop: '2px solid transparent',
-                  borderRadius: '50%'
-                }} className="animate-spin" />
-                Publication...
-              </>
-            ) : (
-              <>
-                <Send size={14} /> Publier
               </>
             )}
           </button>
@@ -280,6 +263,50 @@ export default function PostEditorPage() {
               <RichTextEditor content={content} onChange={setContent} />
             </div>
           </div>
+        </div>
+      )}
+      
+      {/* Bouton Publier en bas - Pleine largeur */}
+      {!preview && (
+        <div style={{ marginTop: '2rem' }}>
+          <button onClick={() => handleSave('published')} disabled={saving}
+            style={{ 
+              width: '100%',
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              gap: '0.4rem', 
+              padding: '0.875rem 1.5rem', 
+              borderRadius: '12px', 
+              fontSize: '0.95rem', 
+              fontWeight: 600, 
+              background: saving ? 'var(--c-surface2)' : 'var(--c-cyan)', 
+              color: saving ? 'var(--c-muted)' : 'var(--c-cream)', 
+              border: 'none', 
+              cursor: saving ? 'not-allowed' : 'pointer', 
+              transition: 'all 0.2s',
+              boxShadow: saving ? 'none' : '0 2px 8px rgba(26, 155, 196, 0.3)'
+            }}
+            onMouseEnter={e => !saving && ((e.currentTarget as HTMLElement).style.background = 'var(--c-cyan-dim)')}
+            onMouseLeave={e => !saving && ((e.currentTarget as HTMLElement).style.background = 'var(--c-cyan)')}
+          >
+            {saving ? (
+              <>
+                <div style={{
+                  width: '18px',
+                  height: '18px',
+                  border: '2px solid currentColor',
+                  borderTop: '2px solid transparent',
+                  borderRadius: '50%'
+                }} className="animate-spin" />
+                Publication en cours...
+              </>
+            ) : (
+              <>
+                <Send size={18} /> Publier l'article
+              </>
+            )}
+          </button>
         </div>
       )}
     </div>
