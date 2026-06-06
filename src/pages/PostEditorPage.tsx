@@ -26,7 +26,7 @@ export default function PostEditorPage() {
 
   const inputStyle: React.CSSProperties = {
     width: '100%', padding: '0.65rem 0.875rem', borderRadius: '8px',
-    fontSize: '0.9rem', background: 'var(--c-surface2)',
+    fontSize: '0.9rem', background: 'var(--c-bg)',
     color: 'var(--c-text)', border: '1px solid var(--c-border)', outline: 'none',
     transition: 'border-color 0.15s',
   }
@@ -94,7 +94,7 @@ export default function PostEditorPage() {
     setSelectedTags(prev => prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId])
 
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       {saveError && (
         <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(224,82,82,0.1)', color: 'var(--c-red)', border: '1px solid rgba(224,82,82,0.2)', fontSize: '0.875rem' }}>
           ⚠️ {saveError}
@@ -103,10 +103,10 @@ export default function PostEditorPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '1.5rem', color: 'var(--c-text)' }}>
+          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>
             {isEdit ? 'Modifier l\'article' : 'Nouvel article'}
           </h1>
-          <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '2px' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--c-sub)', marginTop: '2px' }}>
             {isEdit ? 'Modifiez et sauvegardez vos modifications' : 'Rédigez et publiez un nouvel article'}
           </p>
         </div>

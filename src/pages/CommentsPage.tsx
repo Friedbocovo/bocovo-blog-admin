@@ -106,50 +106,112 @@ export default function CommentsPage() {
   }
   if (loading) {
     return (
-      <div className="w-full">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-900">Commentaires</h1>
-          <p className="text-slate-600 mt-1">Gérez les commentaires de vos visiteurs</p>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h1 style={{ 
+            fontSize: '2rem', 
+            fontFamily: 'var(--font-head)', 
+            fontWeight: 'bold', 
+            color: 'var(--c-text)' 
+          }}>
+            Commentaires
+          </h1>
+          <p style={{ color: 'var(--c-sub)', marginTop: '0.25rem' }}>Gérez les commentaires de vos visiteurs</p>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-600 font-medium">Chargement des commentaires...</p>
+        <div style={{ 
+          background: 'var(--c-surface)', 
+          borderRadius: '16px', 
+          border: '1px solid var(--c-border)', 
+          padding: '3rem', 
+          textAlign: 'center' 
+        }}>
+          <div style={{
+            width: '3rem',
+            height: '3rem',
+            border: `4px solid var(--c-cyan)20`,
+            borderTop: '4px solid var(--c-cyan)',
+            borderRadius: '50%',
+            margin: '0 auto 1rem'
+          }} className="animate-spin" />
+          <p style={{ color: 'var(--c-text)', fontWeight: '500' }}>Chargement des commentaires...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Commentaires</h1>
-        <p className="text-slate-600">Gérez et répondez aux commentaires de vos visiteurs</p>
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ 
+          fontSize: '2rem', 
+          fontFamily: 'var(--font-head)', 
+          fontWeight: 'bold', 
+          color: 'var(--c-text)', 
+          marginBottom: '0.5rem' 
+        }}>
+          Commentaires
+        </h1>
+        <p style={{ color: 'var(--c-sub)' }}>Gérez et répondez aux commentaires de vos visiteurs</p>
       </div>
 
       {/* Filtres et recherche */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+      <div style={{ 
+        background: 'var(--c-surface)', 
+        borderRadius: '12px', 
+        border: '1px solid var(--c-border)', 
+        padding: '1.5rem', 
+        marginBottom: '1.5rem' 
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '1rem' 
+        }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ position: 'relative' }}>
+              <Search style={{ 
+                position: 'absolute', 
+                left: '0.75rem', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                color: 'var(--c-muted)' 
+              }} size={18} />
               <input
                 type="text"
                 placeholder="Rechercher par contenu, auteur ou article..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                style={{
+                  width: '100%',
+                  paddingLeft: '2.5rem',
+                  paddingRight: '1rem',
+                  paddingTop: '0.625rem',
+                  paddingBottom: '0.625rem',
+                  background: 'var(--c-bg)',
+                  border: '1px solid var(--c-border)',
+                  borderRadius: '8px',
+                  color: 'var(--c-text)',
+                  fontSize: '0.875rem'
+                }}
               />
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Filter size={18} className="text-slate-500" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Filter size={18} style={{ color: 'var(--c-muted)' }} />
               <select
                 value={filterStatus}
                 onChange={e => setFilterStatus(e.target.value as typeof filterStatus)}
-                className="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  padding: '0.625rem 0.75rem',
+                  background: 'var(--c-bg)',
+                  border: '1px solid var(--c-border)',
+                  borderRadius: '8px',
+                  color: 'var(--c-text)',
+                  fontSize: '0.875rem'
+                }}
               >
                 <option value="all">Tous les commentaires</option>
                 <option value="recent">Récents (7 jours)</option>
@@ -157,7 +219,14 @@ export default function CommentsPage() {
               </select>
             </div>
             
-            <div className="text-sm text-slate-600 bg-slate-100 px-3 py-2 rounded-lg">
+            <div style={{
+              fontSize: '0.875rem',
+              color: 'var(--c-sub)',
+              background: 'var(--c-surface2)',
+              padding: '0.5rem 0.75rem',
+              borderRadius: '8px',
+              border: '1px solid var(--c-border)'
+            }}>
               {filteredComments.length} commentaire{filteredComments.length !== 1 ? 's' : ''}
             </div>
           </div>
@@ -166,14 +235,40 @@ export default function CommentsPage() {
 
       {/* Liste des commentaires */}
       {filteredComments.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-16 text-center">
-          <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6 mx-auto">
-            <MessageSquare size={32} className="text-slate-400" />
+        <div style={{ 
+          background: 'var(--c-surface)', 
+          borderRadius: '16px', 
+          border: '1px solid var(--c-border)', 
+          padding: '4rem', 
+          textAlign: 'center' 
+        }}>
+          <div style={{
+            width: '5rem',
+            height: '5rem',
+            background: 'var(--c-surface2)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '1.5rem',
+            margin: '0 auto 1.5rem'
+          }}>
+            <MessageSquare size={32} style={{ color: 'var(--c-muted)' }} />
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontFamily: 'var(--font-head)',
+            fontWeight: '600',
+            color: 'var(--c-text)',
+            marginBottom: '0.5rem'
+          }}>
             {searchQuery || filterStatus !== 'all' ? 'Aucun commentaire trouvé' : 'Aucun commentaire'}
           </h3>
-          <p className="text-slate-600 max-w-sm mx-auto">
+          <p style={{
+            color: 'var(--c-sub)',
+            maxWidth: '21rem',
+            margin: '0 auto'
+          }}>
             {searchQuery || filterStatus !== 'all' 
               ? 'Essayez de modifier vos critères de recherche ou filtres.'
               : 'Les commentaires de vos visiteurs apparaîtront ici.'
@@ -181,38 +276,61 @@ export default function CommentsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {filteredComments.map(comment => (
-            <div key={comment.id} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
+            <div key={comment.id} style={{ 
+              background: 'var(--c-surface)', 
+              borderRadius: '12px', 
+              border: '1px solid var(--c-border)', 
+              overflow: 'hidden',
+              transition: 'all 0.2s'
+            }}>
               {/* En-tête du commentaire */}
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-4">
+              <div style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Avatar 
                       src={comment.user?.avatar} 
                       name={comment.user?.name ?? 'Utilisateur'} 
                       size="md" 
                     />
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-slate-900">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                        <h3 style={{ 
+                          fontWeight: '600', 
+                          color: 'var(--c-text)',
+                          fontFamily: 'var(--font-head)'
+                        }}>
                           {comment.user?.name ?? 'Utilisateur anonyme'}
                         </h3>
                         {comment.parent_id && (
-                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
+                          <span style={{
+                            padding: '0.25rem 0.5rem',
+                            background: 'rgba(26, 155, 196, 0.1)',
+                            color: 'var(--c-cyan)',
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: '500',
+                            border: '1px solid rgba(26, 155, 196, 0.2)'
+                          }}>
                             Réponse
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-slate-500">
-                        <div className="flex items-center gap-1">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem', color: 'var(--c-muted)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <Calendar size={14} />
                           <span>{formatDate(comment.created_at)}</span>
                         </div>
                         {comment.post && (
-                          <div className="flex items-center gap-1">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                             <ExternalLink size={14} />
-                            <span className="truncate max-w-[200px]">
+                            <span style={{ 
+                              overflow: 'hidden', 
+                              textOverflow: 'ellipsis', 
+                              whiteSpace: 'nowrap', 
+                              maxWidth: '12.5rem' 
+                            }}>
                               {comment.post.title}
                             </span>
                           </div>
@@ -222,20 +340,32 @@ export default function CommentsPage() {
                   </div>
                   
                   {/* Actions */}
-                  <div className="flex items-center gap-2">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <button 
                       onClick={() => setReplyForms(p => ({ 
                         ...p, 
                         [comment.id]: p[comment.id] !== undefined ? undefined : `@${comment.user?.name} ` 
                       }))}
-                      className="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors"
+                      style={{
+                        padding: '0.5rem',
+                        background: 'rgba(26, 155, 196, 0.1)',
+                        color: 'var(--c-cyan)',
+                        borderRadius: '8px',
+                        transition: 'background-color 0.2s'
+                      }}
                       title="Répondre"
                     >
                       <Reply size={16} />
                     </button>
                     <button 
                       onClick={() => handleDelete(comment.id)}
-                      className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                      style={{
+                        padding: '0.5rem',
+                        background: 'rgba(224, 82, 82, 0.1)',
+                        color: 'var(--c-red)',
+                        borderRadius: '8px',
+                        transition: 'background-color 0.2s'
+                      }}
                       title="Supprimer"
                     >
                       <Trash2 size={16} />
@@ -244,8 +374,16 @@ export default function CommentsPage() {
                 </div>
 
                 {/* Contenu du commentaire */}
-                <div className="bg-slate-50 rounded-lg p-4 mb-4">
-                  <p className="text-slate-800 leading-relaxed break-words">{comment.content}</p>
+                <div style={{ 
+                  background: 'var(--c-bg)', 
+                  borderRadius: '8px', 
+                  padding: '1rem', 
+                  marginBottom: '1rem',
+                  border: '1px solid var(--c-border)'
+                }}>
+                  <p style={{ color: 'var(--c-text)', lineHeight: 1.6, wordBreak: 'break-word' }}>
+                    {comment.content}
+                  </p>
                 </div>
                 {/* Formulaire de réponse */}
                 {replyForms[comment.id] !== undefined && (

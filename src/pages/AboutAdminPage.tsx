@@ -100,7 +100,7 @@ export default function AboutAdminPage() {
 
   const inputStyle: React.CSSProperties = {
     padding: '0.6rem 0.875rem', borderRadius: '8px', fontSize: '0.875rem',
-    background: 'var(--c-surface2)', color: 'var(--c-text)',
+    background: 'var(--c-bg)', color: 'var(--c-text)',
     border: '1px solid var(--c-border)', outline: 'none', width: '100%',
   }
 
@@ -123,11 +123,11 @@ export default function AboutAdminPage() {
   }
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 0.5rem' }}>
+    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '1.5rem', color: 'var(--c-text)' }}>Page À propos</h1>
-          <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '2px' }}>Gérez votre présentation publique</p>
+          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>Page À propos</h1>
+          <p style={{ fontSize: '0.9rem', color: 'var(--c-sub)', marginTop: '2px' }}>Gérez votre présentation publique</p>
         </div>
         <button onClick={() => setPreview(v => !v)}
           style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: preview ? 'rgba(26,155,196,0.15)' : 'var(--c-surface2)', color: preview ? 'var(--c-cyan)' : 'var(--c-sub)', border: `1px solid ${preview ? 'var(--c-cyan-dim)' : 'var(--c-border)'}`, cursor: 'pointer' }}>

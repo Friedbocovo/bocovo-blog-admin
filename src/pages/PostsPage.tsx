@@ -105,20 +105,20 @@ export default function PostsPage() {
 
   const filterBtn = (val: string, label: string) => (
     <button key={val} onClick={() => setSearchParams(val ? { status: val } : {})}
-      style={{ padding: '0.3rem 0.8rem', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', border: 'none', background: filterStatus === val ? 'var(--c-cyan-dim)' : 'var(--c-surface2)', color: filterStatus === val ? '#fff' : 'var(--c-sub)' }}>
+      style={{ padding: '0.3rem 0.8rem', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', border: 'none', background: filterStatus === val ? 'var(--c-cyan)' : 'var(--c-surface2)', color: filterStatus === val ? 'var(--c-cream)' : 'var(--c-sub)' }}>
       {label}
     </button>
   )
 
   return (
-    <div>
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '1.5rem', color: 'var(--c-text)' }}>Articles</h1>
-          <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '2px' }}>{posts.length} article{posts.length !== 1 ? 's' : ''}</p>
+          <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>Articles</h1>
+          <p style={{ fontSize: '0.9rem', color: 'var(--c-sub)', marginTop: '2px' }}>{posts.length} article{posts.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={() => navigate('/posts/new')}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1.1rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 600, background: 'var(--c-cyan-dim)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1.1rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 600, background: 'var(--c-cyan)', color: 'var(--c-cream)', border: 'none', cursor: 'pointer' }}>
           <Plus size={16} /> Nouveau post
         </button>
       </div>
@@ -129,7 +129,7 @@ export default function PostsPage() {
         {filterBtn('draft', 'Brouillons')}
         {tags.map(t => (
           <button key={t.id} onClick={() => setSearchParams({ tag: t.slug })}
-            style={{ padding: '0.3rem 0.8rem', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', border: `1px solid ${filterTag === t.slug ? 'var(--c-cyan-dim)' : 'var(--c-border)'}`, background: filterTag === t.slug ? 'rgba(18,118,158,0.15)' : 'transparent', color: filterTag === t.slug ? 'var(--c-cyan)' : 'var(--c-muted)' }}>
+            style={{ padding: '0.3rem 0.8rem', borderRadius: '5px', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer', border: `1px solid ${filterTag === t.slug ? 'var(--c-cyan)' : 'var(--c-border)'}`, background: filterTag === t.slug ? 'rgba(26, 155, 196, 0.1)' : 'transparent', color: filterTag === t.slug ? 'var(--c-cyan)' : 'var(--c-muted)' }}>
             #{t.name}
           </button>
         ))}
@@ -142,7 +142,7 @@ export default function PostsPage() {
       ) : posts.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', background: 'var(--c-surface)', borderRadius: '10px', border: '1px solid var(--c-border)' }}>
           <p style={{ color: 'var(--c-muted)', fontSize: '0.9rem' }}>Aucun article trouvé.</p>
-          <button onClick={() => navigate('/posts/new')} style={{ marginTop: '0.75rem', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, background: 'var(--c-cyan-dim)', color: '#fff', border: 'none', cursor: 'pointer' }}>
+          <button onClick={() => navigate('/posts/new')} style={{ marginTop: '0.75rem', padding: '0.4rem 1rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, background: 'var(--c-cyan)', color: 'var(--c-cream)', border: 'none', cursor: 'pointer' }}>
             Créer le premier article
           </button>
         </div>

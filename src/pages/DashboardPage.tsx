@@ -9,29 +9,27 @@ function StatCard({ label, value, icon, onClick }: { label: string; value: numbe
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-all duration-200 cursor-pointer group"
       style={{
-        minHeight: '120px',
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'space-between',
+        background: 'var(--c-surface)',
+        border: '1px solid var(--c-border)',
+        borderRadius: '10px',
+        padding: '1.25rem',
+        cursor: onClick ? 'pointer' : 'default',
+        transition: 'border-color 0.2s',
+        display: 'flex', flexDirection: 'column', gap: '0.75rem',
       }}
+      onMouseEnter={e => onClick && ((e.currentTarget as HTMLElement).style.borderColor = 'var(--c-cyan-dim)')}
+      onMouseLeave={e => onClick && ((e.currentTarget as HTMLElement).style.borderColor = 'var(--c-border)')}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <div className="text-slate-400 group-hover:text-blue-500 transition-colors duration-200">
-          {icon}
-        </div>
-        {onClick && (
-          <span className="text-xs font-medium text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            Voir →
-          </span>
-        )}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: '1.5rem' }}>{icon}</span>
+        {onClick && <span style={{ fontSize: '0.75rem', color: 'var(--c-cyan)' }}>Voir →</span>}
       </div>
       <div>
-        <p className="text-2xl lg:text-3xl font-bold text-slate-900 mb-1">
+        <p style={{ fontFamily: 'var(--font-head)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--c-text)', lineHeight: 1 }}>
           {typeof value === 'number' ? value.toLocaleString('fr-FR') : value}
         </p>
-        <p className="text-sm text-slate-600">{label}</p>
+        <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '0.25rem' }}>{label}</p>
       </div>
     </div>
   )
@@ -66,26 +64,50 @@ export default function DashboardPage() {
   const recentPosts = [...posts].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-2">Dashboard</h1>
-        <p className="text-slate-600">
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ 
+          fontSize: '2rem', 
+          fontFamily: 'var(--font-head)', 
+          fontWeight: 'bold', 
+          color: 'var(--c-text)', 
+          marginBottom: '0.5rem',
+          lineHeight: 1.2
+        }}>
+          Dashboard
+        </h1>
+        <p style={{ color: 'var(--c-sub)', fontSize: '0.95rem' }}>
           Vue d'ensemble — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '1.5rem', 
+          marginBottom: '2rem' 
+        }}>
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 h-32 animate-pulse" />
+            <div key={i} style={{ 
+              background: 'var(--c-surface)', 
+              borderRadius: '12px', 
+              border: '1px solid var(--c-border)', 
+              height: '128px' 
+            }} className="animate-pulse" />
           ))}
         </div>
       ) : (
         <>
           {/* Stats */}
           {stats && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+              gap: '1.5rem', 
+              marginBottom: '2rem' 
+            }}>
               <StatCard label="Articles publiés" value={stats.published_posts} icon={<FileText size={24} />} onClick={() => navigate('/posts?status=published')} />
               <StatCard label="Brouillons" value={stats.draft_posts} icon={<FileEdit size={24} />} onClick={() => navigate('/posts?status=draft')} />
               <StatCard label="Vues totales" value={stats.total_views} icon={<Eye size={24} />} />
@@ -93,32 +115,65 @@ export default function DashboardPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', 
+            gap: '2rem', 
+            marginBottom: '2rem' 
+          }}>
             {/* Graphique */}
             {chartData.length > 0 && (
-              <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold text-slate-900">Vues par article</h2>
-                  <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-lg">Top {chartData.length}</span>
+              <div style={{ 
+                background: 'var(--c-surface)', 
+                borderRadius: '12px', 
+                border: '1px solid var(--c-border)', 
+                padding: '1.5rem' 
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                  <h2 style={{ 
+                    fontSize: '1.125rem', 
+                    fontWeight: '600', 
+                    color: 'var(--c-text)',
+                    fontFamily: 'var(--font-head)'
+                  }}>
+                    Vues par article
+                  </h2>
+                  <span style={{ 
+                    fontSize: '0.875rem', 
+                    color: 'var(--c-muted)', 
+                    background: 'var(--c-surface2)', 
+                    padding: '0.5rem 0.75rem', 
+                    borderRadius: '8px',
+                    border: '1px solid var(--c-border)'
+                  }}>
+                    Top {chartData.length}
+                  </span>
                 </div>
-                <div className="h-64">
+                <div style={{ height: '16rem' }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} angle={-30} textAnchor="end" height={80} />
-                      <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--c-border)" />
+                      <XAxis 
+                        dataKey="name" 
+                        tick={{ fill: 'var(--c-muted)', fontSize: 12 }} 
+                        angle={-30} 
+                        textAnchor="end" 
+                        height={80} 
+                      />
+                      <YAxis tick={{ fill: 'var(--c-muted)', fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{ 
-                          background: 'white', 
-                          border: '1px solid #e2e8f0', 
+                          background: 'var(--c-surface)', 
+                          border: `1px solid var(--c-border)`, 
                           borderRadius: '8px', 
                           fontSize: '14px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+                          color: 'var(--c-text)'
                         }}
-                        labelStyle={{ color: '#1e293b' }}
-                        itemStyle={{ color: '#0ea5e9' }}
+                        labelStyle={{ color: 'var(--c-text)' }}
+                        itemStyle={{ color: 'var(--c-cyan)' }}
                       />
-                      <Bar dataKey="vues" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="vues" fill="var(--c-cyan)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -126,42 +181,113 @@ export default function DashboardPage() {
             )}
 
             {/* Articles récents */}
-            <div className="lg:col-span-1 bg-white rounded-xl border border-slate-200 overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-900">Derniers articles</h2>
+            <div style={{ 
+              background: 'var(--c-surface)', 
+              borderRadius: '12px', 
+              border: '1px solid var(--c-border)', 
+              overflow: 'hidden' 
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                padding: '1.5rem', 
+                borderBottom: '1px solid var(--c-border)' 
+              }}>
+                <h2 style={{ 
+                  fontSize: '1.125rem', 
+                  fontWeight: '600', 
+                  color: 'var(--c-text)',
+                  fontFamily: 'var(--font-head)'
+                }}>
+                  Derniers articles
+                </h2>
                 <button 
                   onClick={() => navigate('/posts')} 
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                  style={{
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: 'var(--c-cyan)',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-cyan-dim)'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-cyan)'}
                 >
                   Voir tout →
                 </button>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div>
                 {recentPosts.map((post) => (
                   <div key={post.id}
                     onClick={() => navigate(`/posts/${post.id}/edit`)}
-                    className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors cursor-pointer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      padding: '1rem',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s',
+                      borderBottom: '1px solid var(--c-border)'
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--c-surface2)'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'}
                   >
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                    <div style={{
+                      width: '3rem',
+                      height: '3rem',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      background: 'var(--c-surface2)',
+                      flexShrink: 0
+                    }}>
                       {post.cover_image ? (
-                        <img src={post.cover_image} alt="" className="w-full h-full object-cover" />
+                        <img src={post.cover_image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <div style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          color: 'var(--c-muted)' 
+                        }}>
                           <FileText size={20} />
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-900 truncate text-sm">{post.title}</p>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                          post.status === 'published' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ 
+                        fontWeight: '500', 
+                        color: 'var(--c-text)', 
+                        fontSize: '0.875rem',
+                        marginBottom: '0.25rem',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {post.title}
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          padding: '0.125rem 0.5rem',
+                          borderRadius: '9999px',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          background: post.status === 'published' ? 'rgba(29, 184, 122, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                          color: post.status === 'published' ? 'var(--c-green)' : 'var(--c-orange)',
+                          border: `1px solid ${post.status === 'published' ? 'rgba(29, 184, 122, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
+                        }}>
                           {post.status === 'published' ? 'Publié' : 'Brouillon'}
                         </span>
-                        <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <span style={{ 
+                          fontSize: '0.75rem', 
+                          color: 'var(--c-muted)', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '0.25rem' 
+                        }}>
                           <Eye size={12} />
                           {post.views_count}
                         </span>
@@ -170,14 +296,37 @@ export default function DashboardPage() {
                   </div>
                 ))}
                 {recentPosts.length === 0 && (
-                  <div className="p-8 text-center">
-                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <FileText size={24} className="text-slate-400" />
+                  <div style={{ padding: '2rem', textAlign: 'center' }}>
+                    <div style={{
+                      width: '3rem',
+                      height: '3rem',
+                      background: 'var(--c-surface2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 0.75rem'
+                    }}>
+                      <FileText size={24} style={{ color: 'var(--c-muted)' }} />
                     </div>
-                    <p className="text-sm text-slate-600 mb-4">Aucun article pour le moment</p>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--c-sub)', marginBottom: '1rem' }}>
+                      Aucun article pour le moment
+                    </p>
                     <button 
                       onClick={() => navigate('/posts/new')}
-                      className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '0.5rem 1rem',
+                        background: 'var(--c-cyan)',
+                        color: 'var(--c-cream)',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        borderRadius: '8px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--c-cyan-dim)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--c-cyan)'}
                     >
                       Créer le premier
                     </button>
@@ -188,27 +337,72 @@ export default function DashboardPage() {
           </div>
 
           {/* Actions rapides */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+            gap: '1.5rem' 
+          }}>
             {[
-              { label: 'Nouvel article', Icon: PenLine, to: '/posts/new', color: '#0ea5e9' },
-              { label: 'Commentaires', Icon: MessageSquare, to: '/comments', color: '#8b5cf6' },
-              { label: 'Messages', Icon: Mail, to: '/chat', color: '#10b981' },
-              { label: 'Page À propos', Icon: Info, to: '/about', color: '#f59e0b' },
+              { label: 'Nouvel article', Icon: PenLine, to: '/posts/new', color: 'var(--c-cyan)' },
+              { label: 'Commentaires', Icon: MessageSquare, to: '/comments', color: 'var(--c-purple)' },
+              { label: 'Messages', Icon: Mail, to: '/chat', color: 'var(--c-green)' },
+              { label: 'Page À propos', Icon: Info, to: '/about', color: 'var(--c-orange)' },
             ].map(({ label, Icon, to, color }) => (
               <button 
                 key={to} 
                 onClick={() => navigate(to)}
-                className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all duration-200 group"
-                style={{ minHeight: '120px' }}
+                style={{
+                  background: 'var(--c-surface)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--c-border)',
+                  padding: '1.5rem',
+                  minHeight: '120px',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={e => {
+                  const btn = e.currentTarget as HTMLElement
+                  btn.style.borderColor = 'var(--c-cyan-dim)'
+                  btn.style.transform = 'translateY(-2px)'
+                  const icon = btn.querySelector('.action-icon') as HTMLElement
+                  if (icon) icon.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={e => {
+                  const btn = e.currentTarget as HTMLElement
+                  btn.style.borderColor = 'var(--c-border)'
+                  btn.style.transform = 'translateY(0)'
+                  const icon = btn.querySelector('.action-icon') as HTMLElement
+                  if (icon) icon.style.transform = 'scale(1)'
+                }}
               >
-                <div className="flex flex-col items-center text-center space-y-3">
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  textAlign: 'center', 
+                  gap: '0.75rem' 
+                }}>
                   <div 
-                    className="w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
-                    style={{ backgroundColor: `${color}20` }}
+                    className="action-icon"
+                    style={{ 
+                      width: '3rem', 
+                      height: '3rem', 
+                      borderRadius: '12px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      background: `${color}15`,
+                      transition: 'transform 0.2s'
+                    }}
                   >
                     <Icon size={24} style={{ color }} />
                   </div>
-                  <span className="font-medium text-slate-900 group-hover:text-slate-700 transition-colors">
+                  <span style={{ 
+                    fontWeight: '500', 
+                    color: 'var(--c-text)',
+                    fontSize: '0.95rem',
+                    transition: 'color 0.2s'
+                  }}>
                     {label}
                   </span>
                 </div>

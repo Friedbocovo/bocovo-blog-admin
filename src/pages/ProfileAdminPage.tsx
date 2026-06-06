@@ -44,15 +44,15 @@ export default function ProfileAdminPage() {
 
   const inputStyle: React.CSSProperties = {
     width: '100%', padding: '0.625rem 0.875rem', borderRadius: '8px',
-    fontSize: '0.875rem', background: 'var(--c-surface2)',
+    fontSize: '0.875rem', background: 'var(--c-bg)',
     color: 'var(--c-text)', border: '1px solid var(--c-border)', outline: 'none',
   }
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 0.5rem' }}>
+    <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 1rem 2rem' }}>
       <div style={{ marginBottom: '1.75rem' }}>
-        <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '1.5rem', color: 'var(--c-text)' }}>Mon profil</h1>
-        <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginTop: '2px' }}>Gérez vos informations personnelles</p>
+        <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '2rem', color: 'var(--c-text)', marginBottom: '0.5rem' }}>Mon profil</h1>
+        <p style={{ fontSize: '0.9rem', color: 'var(--c-sub)', marginTop: '2px' }}>Gérez vos informations personnelles</p>
       </div>
 
       {/* Avatar card */}
@@ -76,7 +76,7 @@ export default function ProfileAdminPage() {
           <p style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--c-text)', marginBottom: '2px' }}>{user.name}</p>
           <p style={{ fontSize: '0.8rem', color: 'var(--c-muted)', marginBottom: '0.75rem' }}>{user.email}</p>
           <button onClick={() => fileRef.current?.click()} disabled={uploading}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.875rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 500, background: 'var(--c-surface2)', color: 'var(--c-sub)', border: '1px solid var(--c-border)', cursor: 'pointer', opacity: uploading ? 0.5 : 1 }}>
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.875rem', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 500, background: 'var(--c-bg)', color: 'var(--c-sub)', border: '1px solid var(--c-border)', cursor: 'pointer', opacity: uploading ? 0.5 : 1 }}>
             <Camera size={13} /> {uploading ? 'Upload…' : 'Changer la photo'}
           </button>
           <p style={{ fontSize: '0.72rem', color: 'var(--c-muted)', marginTop: '0.3rem' }}>JPG, PNG — max 5 Mo</p>
@@ -129,7 +129,7 @@ export default function ProfileAdminPage() {
         )}
 
         <button type="submit" disabled={saving}
-          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.7rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 600, background: 'var(--c-cyan-dim)', color: '#fff', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.7rem', borderRadius: '8px', fontSize: '0.875rem', fontWeight: 600, background: 'var(--c-cyan)', color: 'var(--c-cream)', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
           <Save size={15} /> {saving ? 'Enregistrement…' : 'Enregistrer les modifications'}
         </button>
       </form>

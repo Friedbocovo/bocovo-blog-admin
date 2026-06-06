@@ -107,14 +107,35 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
-          <p className="text-slate-600">Communiquez avec vos visiteurs</p>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <h1 style={{ 
+            fontSize: '2rem', 
+            fontFamily: 'var(--font-head)', 
+            fontWeight: 'bold', 
+            color: 'var(--c-text)', 
+            marginBottom: '0.5rem' 
+          }}>
+            Messages
+          </h1>
+          <p style={{ color: 'var(--c-sub)' }}>Communiquez avec vos visiteurs</p>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
-          <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-600 font-medium">Chargement des conversations...</p>
+        <div style={{ 
+          background: 'var(--c-surface)', 
+          borderRadius: '16px', 
+          border: '1px solid var(--c-border)', 
+          padding: '3rem', 
+          textAlign: 'center' 
+        }}>
+          <div style={{
+            width: '3rem',
+            height: '3rem',
+            border: `4px solid var(--c-cyan)20`,
+            borderTop: '4px solid var(--c-cyan)',
+            borderRadius: '50%',
+            margin: '0 auto 1rem'
+          }} className="animate-spin" />
+          <p style={{ color: 'var(--c-text)', fontWeight: '500' }}>Chargement des conversations...</p>
         </div>
       </div>
     )
@@ -311,25 +332,66 @@ export default function ChatPage() {
   }
   // Layout desktop
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Messages</h1>
-        <p className="text-slate-600">Communiquez avec vos visiteurs</p>
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <h1 style={{ 
+          fontSize: '2rem', 
+          fontFamily: 'var(--font-head)', 
+          fontWeight: 'bold', 
+          color: 'var(--c-text)', 
+          marginBottom: '0.5rem' 
+        }}>
+          Messages
+        </h1>
+        <p style={{ color: 'var(--c-sub)' }}>Communiquez avec vos visiteurs</p>
       </div>
       
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 12rem)' }}>
-        <div className="flex h-full">
+      <div style={{ 
+        background: 'var(--c-surface)', 
+        borderRadius: '16px', 
+        border: '1px solid var(--c-border)', 
+        overflow: 'hidden', 
+        height: 'calc(100vh - 12rem)' 
+      }}>
+        <div style={{ display: 'flex', height: '100%' }}>
           {/* Sidebar conversations */}
-          <div className="w-80 border-r border-slate-200 flex flex-col bg-slate-50/50">
-            <div className="p-4 border-b border-slate-200 bg-white">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+          <div style={{ 
+            width: '20rem', 
+            borderRight: '1px solid var(--c-border)', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            background: 'var(--c-bg)' 
+          }}>
+            <div style={{ 
+              padding: '1rem', 
+              borderBottom: '1px solid var(--c-border)', 
+              background: 'var(--c-surface)' 
+            }}>
+              <div style={{ position: 'relative' }}>
+                <Search style={{ 
+                  position: 'absolute', 
+                  left: '0.75rem', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  color: 'var(--c-muted)' 
+                }} size={18} />
                 <input
                   type="text"
                   placeholder="Rechercher..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  style={{
+                    width: '100%',
+                    paddingLeft: '2.5rem',
+                    paddingRight: '1rem',
+                    paddingTop: '0.625rem',
+                    paddingBottom: '0.625rem',
+                    background: 'var(--c-bg)',
+                    border: '1px solid var(--c-border)',
+                    borderRadius: '12px',
+                    color: 'var(--c-text)',
+                    fontSize: '0.875rem'
+                  }}
                 />
               </div>
             </div>
