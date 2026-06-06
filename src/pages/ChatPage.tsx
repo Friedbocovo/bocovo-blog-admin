@@ -560,7 +560,7 @@ export default function ChatPage() {
   // Layout desktop - Design moderne comme Discord/Slack
   return (
     <div style={{ 
-      height: '95vh', 
+      height: '90vh', 
       display: 'flex', 
       background: 'var(--c-bg)' 
     }}>
