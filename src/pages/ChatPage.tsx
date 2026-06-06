@@ -560,13 +560,13 @@ export default function ChatPage() {
   // Layout desktop - Design moderne comme Discord/Slack
   return (
     <div style={{ 
-      height: '100vh', 
+      height: '95vh', 
       display: 'flex', 
       background: 'var(--c-bg)' 
     }}>
       {/* Sidebar conversations - Style moderne */}
       <div style={{ 
-        width: '300px', 
+        width: '420px', 
         borderRight: '1px solid var(--c-border)', 
         display: 'flex', 
         flexDirection: 'column', 
