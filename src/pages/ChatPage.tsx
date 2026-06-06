@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Send, Search, MoreVertical, ArrowLeft, Phone, Video } from 'lucide-react'
+import { Send, Search, ArrowLeft, Plus, MoreVertical } from 'lucide-react'
 import api from '../lib/api'
 import { createEcho } from '../lib/echo'
 import useAuthStore from '../stores/authStore'
@@ -107,26 +107,8 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
-        <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ 
-            fontSize: '2rem', 
-            fontFamily: 'var(--font-head)', 
-            fontWeight: 'bold', 
-            color: 'var(--c-text)', 
-            marginBottom: '0.5rem' 
-          }}>
-            Messages
-          </h1>
-          <p style={{ color: 'var(--c-sub)' }}>Communiquez avec vos visiteurs</p>
-        </div>
-        <div style={{ 
-          background: 'var(--c-surface)', 
-          borderRadius: '16px', 
-          border: '1px solid var(--c-border)', 
-          padding: '3rem', 
-          textAlign: 'center' 
-        }}>
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--c-bg)' }}>
+        <div style={{ textAlign: 'center' }}>
           <div style={{
             width: '3rem',
             height: '3rem',
@@ -143,123 +125,353 @@ export default function ChatPage() {
   // Layout mobile avec navigation
   if (isMobile) {
     return (
-      <div className="flex flex-col h-screen bg-white overflow-hidden">
+      <div style={{ 
+        height: '100vh', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        background: 'var(--c-bg)' 
+      }}>
         {!activeUser ? (
-          // Liste des conversations (mobile)
-          <div className="flex-1 flex flex-col">
-            <div className="bg-white border-b border-slate-200 px-4 py-6">
-              <h1 className="text-2xl font-bold text-slate-900 mb-4">Messages</h1>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
+          // Liste des conversations (mobile) - Design moderne
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {/* Header mobile moderne */}
+            <div style={{ 
+              background: 'var(--c-surface)', 
+              borderBottom: '1px solid var(--c-border)', 
+              padding: '1rem' 
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                marginBottom: '1rem' 
+              }}>
+                <h1 style={{ 
+                  fontSize: '1.5rem', 
+                  fontFamily: 'var(--font-head)', 
+                  fontWeight: 'bold', 
+                  color: 'var(--c-text)' 
+                }}>
+                  Messages
+                </h1>
+                <button style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'var(--c-cyan)',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}>
+                  <Plus size={20} style={{ color: 'var(--c-cream)' }} />
+                </button>
+              </div>
+              
+              {/* Barre de recherche moderne */}
+              <div style={{ position: 'relative' }}>
+                <Search style={{ 
+                  position: 'absolute', 
+                  left: '1rem', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  color: 'var(--c-muted)' 
+                }} size={18} />
                 <input
                   type="text"
-                  placeholder="Rechercher une conversation..."
+                  placeholder="Search for messages or users"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={{
+                    width: '100%',
+                    paddingLeft: '3rem',
+                    paddingRight: '1rem',
+                    paddingTop: '0.875rem',
+                    paddingBottom: '0.875rem',
+                    background: 'var(--c-bg)',
+                    border: '1px solid var(--c-border)',
+                    borderRadius: '12px',
+                    color: 'var(--c-text)',
+                    fontSize: '0.9rem'
+                  }}
                 />
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto">
+            {/* Liste des conversations - Style moderne */}
+            <div style={{ flex: 1, overflowY: 'auto' }}>
               {filteredConversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 px-4">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-3xl">💬</span>
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  padding: '4rem 1rem', 
+                  textAlign: 'center' 
+                }}>
+                  <div style={{
+                    width: '5rem',
+                    height: '5rem',
+                    background: 'var(--c-surface2)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <span style={{ fontSize: '2rem' }}>💬</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune conversation</h3>
-                  <p className="text-slate-500 text-center">Les nouvelles conversations apparaîtront ici</p>
+                  <h3 style={{ 
+                    fontSize: '1.125rem', 
+                    fontWeight: '600', 
+                    color: 'var(--c-text)', 
+                    marginBottom: '0.5rem' 
+                  }}>
+                    No messages yet
+                  </h3>
+                  <p style={{ color: 'var(--c-sub)' }}>
+                    New conversations will appear here
+                  </p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100">
+                <div>
                   {filteredConversations.map(conv => (
-                    <button 
+                    <div 
                       key={conv.user.id} 
                       onClick={() => openConversation(conv.user)}
-                      className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.875rem 1rem',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.15s',
+                        borderBottom: '1px solid var(--c-border)'
+                      }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--c-surface2)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'}
                     >
-                      <div className="relative">
+                      <div style={{ position: 'relative' }}>
                         <Avatar src={conv.user.avatar} name={conv.user.name} size="lg" />
-                        {conv.unread_count > 0 && (
-                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                            {conv.unread_count > 9 ? '9+' : conv.unread_count}
-                          </div>
-                        )}
+                        {/* Indicateur en ligne */}
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '2px',
+                          right: '2px',
+                          width: '12px',
+                          height: '12px',
+                          background: 'var(--c-green)',
+                          borderRadius: '50%',
+                          border: '2px solid var(--c-bg)'
+                        }} />
                       </div>
                       
-                      <div className="flex-1 min-w-0 text-left">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-slate-900 truncate">{conv.user.name}</h3>
-                          <span className="text-xs text-slate-500 ml-2 flex-shrink-0">
-                            {formatTime(conv.last_message.created_at)}
-                          </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between', 
+                          marginBottom: '0.25rem' 
+                        }}>
+                          <h3 style={{ 
+                            fontWeight: '600', 
+                            color: 'var(--c-text)', 
+                            fontSize: '0.95rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            maxWidth: '12rem'
+                          }}>
+                            {conv.user.name}
+                          </h3>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ 
+                              fontSize: '0.75rem', 
+                              color: 'var(--c-muted)' 
+                            }}>
+                              {formatTime(conv.last_message.created_at)}
+                            </span>
+                            {conv.unread_count > 0 && (
+                              <div style={{
+                                minWidth: '20px',
+                                height: '20px',
+                                background: 'var(--c-cyan)',
+                                color: 'var(--c-cream)',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '0.75rem',
+                                fontWeight: 'bold'
+                              }}>
+                                {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-sm text-slate-600 truncate">
+                        <p style={{ 
+                          fontSize: '0.85rem', 
+                          color: 'var(--c-sub)', 
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
                           {conv.last_message.content}
                         </p>
                       </div>
-                    </button>
+                    </div>
                   ))}
                 </div>
               )}
             </div>
           </div>
         ) : (
-          // Vue conversation (mobile)
-          <div className="flex-1 flex flex-col">
-            {/* Header conversation */}
-            <div className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-3">
+          // Vue conversation (mobile) - Design moderne
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {/* Header conversation moderne */}
+            <div style={{ 
+              background: 'var(--c-surface)', 
+              borderBottom: '1px solid var(--c-border)', 
+              padding: '1rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.75rem' 
+            }}>
               <button 
                 onClick={() => setActiveUser(null)}
-                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'var(--c-bg)',
+                  border: '1px solid var(--c-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
               >
-                <ArrowLeft size={20} className="text-slate-600" />
+                <ArrowLeft size={18} style={{ color: 'var(--c-text)' }} />
               </button>
-              <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-slate-900 truncate">{activeUser.name}</h3>
-                <p className="text-sm text-slate-500">En ligne</p>
+              
+              <div style={{ position: 'relative' }}>
+                <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '1px',
+                  right: '1px',
+                  width: '10px',
+                  height: '10px',
+                  background: 'var(--c-green)',
+                  borderRadius: '50%',
+                  border: '2px solid var(--c-surface)'
+                }} />
               </div>
-              <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                  <Phone size={18} className="text-slate-600" />
-                </button>
-                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                  <Video size={18} className="text-slate-600" />
-                </button>
-                <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                  <MoreVertical size={18} className="text-slate-600" />
-                </button>
+              
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h3 style={{ 
+                  fontWeight: '600', 
+                  color: 'var(--c-text)', 
+                  fontSize: '1rem',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {activeUser.name}
+                </h3>
+                <p style={{ 
+                  fontSize: '0.8rem', 
+                  color: 'var(--c-green)' 
+                }}>
+                  Active now
+                </p>
               </div>
+              
+              <button style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'var(--c-bg)',
+                border: '1px solid var(--c-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}>
+                <MoreVertical size={18} style={{ color: 'var(--c-text)' }} />
+              </button>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 bg-slate-50/50">
+            {/* Messages - Design moderne */}
+            <div style={{ 
+              flex: 1, 
+              overflowY: 'auto', 
+              padding: '1rem', 
+              background: 'var(--c-bg)' 
+            }}>
               {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-2xl">👋</span>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  height: '100%' 
+                }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{
+                      width: '4rem',
+                      height: '4rem',
+                      background: 'var(--c-surface2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '1rem',
+                      margin: '0 auto 1rem'
+                    }}>
+                      <span style={{ fontSize: '1.5rem' }}>👋</span>
                     </div>
-                    <p className="text-slate-600">Commencez la conversation avec {activeUser.name}</p>
+                    <p style={{ color: 'var(--c-sub)' }}>
+                      Start conversation with {activeUser.name}
+                    </p>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {messages.map(m => {
                     const isSent = m.sender_id === user?.id
                     return (
-                      <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[280px] px-4 py-2 rounded-2xl ${
-                          isSent ? 'bg-blue-500 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-900 rounded-bl-md'
-                        } shadow-sm`}>
-                          <p className="text-sm break-words">{m.content}</p>
-                          <div className={`flex items-center gap-2 mt-1 text-xs ${
-                            isSent ? 'text-blue-100 justify-end' : 'text-slate-500 justify-start'
-                          }`}>
+                      <div key={m.id} style={{ 
+                        display: 'flex', 
+                        justifyContent: isSent ? 'flex-end' : 'flex-start' 
+                      }}>
+                        <div style={{
+                          maxWidth: '75%',
+                          padding: '0.75rem 1rem',
+                          borderRadius: '18px',
+                          background: isSent ? 'var(--c-cyan)' : 'var(--c-surface2)',
+                          color: isSent ? 'var(--c-cream)' : 'var(--c-text)',
+                          position: 'relative'
+                        }}>
+                          <p style={{ 
+                            fontSize: '0.9rem', 
+                            lineHeight: 1.4,
+                            wordBreak: 'break-word'
+                          }}>
+                            {m.content}
+                          </p>
+                          <div style={{
+                            fontSize: '0.7rem',
+                            color: isSent ? 'rgba(255,255,255,0.7)' : 'var(--c-muted)',
+                            marginTop: '0.25rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: isSent ? 'flex-end' : 'flex-start',
+                            gap: '0.25rem'
+                          }}>
                             <span>{formatTime(m.created_at)}</span>
                             {isSent && (
-                              <span className="text-blue-200">
+                              <span style={{ color: m.read_at ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.5)' }}>
                                 {m.read_at ? '✓✓' : '✓'}
                               </span>
                             )}
@@ -272,55 +484,70 @@ export default function ChatPage() {
                 </div>
               )}
             </div>
-            {/* Input mobile - Le footer disparaît sur mobile grâce à la classe hidden */}
-            <div className="bg-white border-t border-slate-200 p-4 md:block hidden">
-              <form onSubmit={handleSend} className="flex gap-3 items-end">
-                <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-                  <input 
-                    type="text" 
-                    value={input} 
-                    onChange={e => setInput(e.target.value)}
-                    placeholder="Tapez votre message..."
-                    className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none resize-none"
-                    disabled={sending}
-                  />
-                </div>
-                <button 
-                  type="submit" 
-                  disabled={sending || !input.trim()}
-                  className="w-12 h-12 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-full flex items-center justify-center transition-colors"
-                >
-                  {sending ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Send size={18} />
-                  )}
-                </button>
-              </form>
-            </div>
             
-            {/* Input mobile fixe - Affiché seulement sur mobile */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 safe-area-pb z-50">
-              <form onSubmit={handleSend} className="flex gap-3 items-end">
-                <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+            {/* Input mobile moderne */}
+            <div style={{ 
+              background: 'var(--c-surface)', 
+              borderTop: '1px solid var(--c-border)', 
+              padding: '1rem' 
+            }}>
+              <form onSubmit={handleSend} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
+                <div style={{
+                  flex: 1,
+                  background: 'var(--c-bg)',
+                  borderRadius: '20px',
+                  border: '1px solid var(--c-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.75rem 1rem'
+                }}>
                   <input 
                     type="text" 
                     value={input} 
                     onChange={e => setInput(e.target.value)}
-                    placeholder="Tapez votre message..."
-                    className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none resize-none"
+                    placeholder="Message..."
+                    style={{
+                      flex: 1,
+                      background: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      color: 'var(--c-text)',
+                      fontSize: '0.9rem'
+                    }}
                     disabled={sending}
                   />
                 </div>
                 <button 
                   type="submit" 
                   disabled={sending || !input.trim()}
-                  className="w-12 h-12 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-full flex items-center justify-center transition-colors"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '50%',
+                    background: input.trim() ? 'var(--c-cyan)' : 'var(--c-surface2)',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: sending || !input.trim() ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
                 >
                   {sending ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid transparent',
+                      borderTop: '2px solid currentColor',
+                      borderRadius: '50%'
+                    }} className="animate-spin" />
                   ) : (
-                    <Send size={18} />
+                    <Send 
+                      size={18} 
+                      style={{ 
+                        color: input.trim() ? 'var(--c-cream)' : 'var(--c-muted)' 
+                      }} 
+                    />
                   )}
                 </button>
               </form>
@@ -330,233 +557,480 @@ export default function ChatPage() {
       </div>
     )
   }
-  // Layout desktop
+  // Layout desktop - Design moderne comme Discord/Slack
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem 2rem' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ 
-          fontSize: '2rem', 
-          fontFamily: 'var(--font-head)', 
-          fontWeight: 'bold', 
-          color: 'var(--c-text)', 
-          marginBottom: '0.5rem' 
+    <div style={{ 
+      height: '100vh', 
+      display: 'flex', 
+      background: 'var(--c-bg)' 
+    }}>
+      {/* Sidebar conversations - Style moderne */}
+      <div style={{ 
+        width: '300px', 
+        borderRight: '1px solid var(--c-border)', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        background: 'var(--c-surface)' 
+      }}>
+        {/* Header sidebar */}
+        <div style={{ 
+          padding: '1rem', 
+          borderBottom: '1px solid var(--c-border)' 
         }}>
-          Messages
-        </h1>
-        <p style={{ color: 'var(--c-sub)' }}>Communiquez avec vos visiteurs</p>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            marginBottom: '1rem' 
+          }}>
+            <h1 style={{ 
+              fontSize: '1.25rem', 
+              fontFamily: 'var(--font-head)', 
+              fontWeight: 'bold', 
+              color: 'var(--c-text)' 
+            }}>
+              Messages ({filteredConversations.length})
+            </h1>
+            <button style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '6px',
+              background: 'var(--c-cyan)',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}>
+              <Plus size={16} style={{ color: 'var(--c-cream)' }} />
+            </button>
+          </div>
+          
+          {/* Barre de recherche */}
+          <div style={{ position: 'relative' }}>
+            <Search style={{ 
+              position: 'absolute', 
+              left: '0.75rem', 
+              top: '50%', 
+              transform: 'translateY(-50%)', 
+              color: 'var(--c-muted)' 
+            }} size={16} />
+            <input
+              type="text"
+              placeholder="Search Message"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                paddingLeft: '2.5rem',
+                paddingRight: '0.75rem',
+                paddingTop: '0.625rem',
+                paddingBottom: '0.625rem',
+                background: 'var(--c-bg)',
+                border: '1px solid var(--c-border)',
+                borderRadius: '8px',
+                color: 'var(--c-text)',
+                fontSize: '0.875rem'
+              }}
+            />
+          </div>
+        </div>
+        
+        {/* Liste des conversations */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {filteredConversations.length === 0 ? (
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              padding: '3rem 1rem', 
+              textAlign: 'center' 
+            }}>
+              <div style={{
+                width: '4rem',
+                height: '4rem',
+                background: 'var(--c-surface2)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem'
+              }}>
+                <span style={{ fontSize: '1.5rem' }}>💬</span>
+              </div>
+              <p style={{ color: 'var(--c-sub)', fontSize: '0.875rem' }}>
+                {searchQuery ? 'No results found' : 'No conversations'}
+              </p>
+            </div>
+          ) : (
+            <div>
+              {filteredConversations.map(conv => (
+                <div 
+                  key={conv.user.id} 
+                  onClick={() => openConversation(conv.user)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    padding: '0.75rem 1rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                    background: activeUser?.id === conv.user.id ? 'var(--c-surface2)' : 'transparent',
+                    borderLeft: `3px solid ${activeUser?.id === conv.user.id ? 'var(--c-cyan)' : 'transparent'}`
+                  }}
+                  onMouseEnter={e => {
+                    if (activeUser?.id !== conv.user.id) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--c-bg)'
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (activeUser?.id !== conv.user.id) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'
+                    }
+                  }}
+                >
+                  <div style={{ position: 'relative' }}>
+                    <Avatar src={conv.user.avatar} name={conv.user.name} size="md" />
+                    {/* Indicateur en ligne */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '0px',
+                      right: '0px',
+                      width: '10px',
+                      height: '10px',
+                      background: 'var(--c-green)',
+                      borderRadius: '50%',
+                      border: '2px solid var(--c-surface)'
+                    }} />
+                  </div>
+                  
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      marginBottom: '0.25rem' 
+                    }}>
+                      <h3 style={{ 
+                        fontWeight: '600', 
+                        color: 'var(--c-text)', 
+                        fontSize: '0.875rem',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {conv.user.name}
+                      </h3>
+                      <span style={{ 
+                        fontSize: '0.7rem', 
+                        color: 'var(--c-muted)',
+                        flexShrink: 0,
+                        marginLeft: '0.5rem'
+                      }}>
+                        {formatTime(conv.last_message.created_at)}
+                      </span>
+                    </div>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between' 
+                    }}>
+                      <p style={{ 
+                        fontSize: '0.8rem', 
+                        color: 'var(--c-sub)', 
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        flex: 1
+                      }}>
+                        {conv.last_message.content}
+                      </p>
+                      {conv.unread_count > 0 && (
+                        <div style={{
+                          minWidth: '18px',
+                          height: '18px',
+                          background: 'var(--c-cyan)',
+                          color: 'var(--c-cream)',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.7rem',
+                          fontWeight: 'bold',
+                          marginLeft: '0.5rem'
+                        }}>
+                          {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
       
-      <div style={{ 
-        background: 'var(--c-surface)', 
-        borderRadius: '16px', 
-        border: '1px solid var(--c-border)', 
-        overflow: 'hidden', 
-        height: 'calc(100vh - 12rem)' 
-      }}>
-        <div style={{ display: 'flex', height: '100%' }}>
-          {/* Sidebar conversations */}
-          <div style={{ 
-            width: '20rem', 
-            borderRight: '1px solid var(--c-border)', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            background: 'var(--c-bg)' 
-          }}>
+      {/* Zone de conversation */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {activeUser ? (
+          <>
+            {/* Header conversation */}
             <div style={{ 
-              padding: '1rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              padding: '1rem 1.5rem', 
               borderBottom: '1px solid var(--c-border)', 
               background: 'var(--c-surface)' 
             }}>
-              <div style={{ position: 'relative' }}>
-                <Search style={{ 
-                  position: 'absolute', 
-                  left: '0.75rem', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  color: 'var(--c-muted)' 
-                }} size={18} />
-                <input
-                  type="text"
-                  placeholder="Rechercher..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  style={{
-                    width: '100%',
-                    paddingLeft: '2.5rem',
-                    paddingRight: '1rem',
-                    paddingTop: '0.625rem',
-                    paddingBottom: '0.625rem',
-                    background: 'var(--c-bg)',
-                    border: '1px solid var(--c-border)',
-                    borderRadius: '12px',
-                    color: 'var(--c-text)',
-                    fontSize: '0.875rem'
-                  }}
-                />
-              </div>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto">
-              {filteredConversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl">💬</span>
-                  </div>
-                  <p className="text-sm text-slate-600 text-center">
-                    {searchQuery ? 'Aucun résultat trouvé' : 'Aucune conversation'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ position: 'relative' }}>
+                  <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '0px',
+                    right: '0px',
+                    width: '10px',
+                    height: '10px',
+                    background: 'var(--c-green)',
+                    borderRadius: '50%',
+                    border: '2px solid var(--c-surface)'
+                  }} />
+                </div>
+                <div>
+                  <h3 style={{ 
+                    fontWeight: '600', 
+                    color: 'var(--c-text)', 
+                    fontSize: '1rem' 
+                  }}>
+                    {activeUser.name}
+                  </h3>
+                  <p style={{ 
+                    fontSize: '0.8rem', 
+                    color: 'var(--c-green)' 
+                  }}>
+                    Active now
                   </p>
                 </div>
+              </div>
+              <button style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '6px',
+                background: 'var(--c-bg)',
+                border: '1px solid var(--c-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}>
+                <MoreVertical size={16} style={{ color: 'var(--c-text)' }} />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div style={{ 
+              flex: 1, 
+              overflowY: 'auto', 
+              padding: '1.5rem', 
+              background: 'var(--c-bg)' 
+            }}>
+              {messages.length === 0 ? (
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  height: '100%' 
+                }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{
+                      width: '5rem',
+                      height: '5rem',
+                      background: 'var(--c-surface2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '1rem',
+                      margin: '0 auto 1rem'
+                    }}>
+                      <span style={{ fontSize: '2rem' }}>👋</span>
+                    </div>
+                    <h3 style={{ 
+                      fontWeight: '600', 
+                      color: 'var(--c-text)', 
+                      marginBottom: '0.5rem' 
+                    }}>
+                      Start conversation
+                    </h3>
+                    <p style={{ color: 'var(--c-sub)' }}>
+                      Send a message to {activeUser.name}
+                    </p>
+                  </div>
+                </div>
               ) : (
-                <div>
-                  {filteredConversations.map(conv => (
-                    <button 
-                      key={conv.user.id} 
-                      onClick={() => openConversation(conv.user)}
-                      className={`w-full flex items-center gap-3 p-4 text-left hover:bg-white transition-all border-l-4 ${
-                        activeUser?.id === conv.user.id 
-                          ? 'bg-white border-blue-500 shadow-sm' 
-                          : 'border-transparent hover:border-blue-200'
-                      }`}
-                    >
-                      <div className="relative">
-                        <Avatar src={conv.user.avatar} name={conv.user.name} size="md" />
-                        {conv.unread_count > 0 && (
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                            {conv.unread_count > 9 ? '9+' : conv.unread_count}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {messages.map(m => {
+                    const isSent = m.sender_id === user?.id
+                    return (
+                      <div key={m.id} style={{ 
+                        display: 'flex', 
+                        justifyContent: isSent ? 'flex-end' : 'flex-start' 
+                      }}>
+                        <div style={{
+                          maxWidth: '60%',
+                          padding: '0.875rem 1.125rem',
+                          borderRadius: '16px',
+                          background: isSent ? 'var(--c-cyan)' : 'var(--c-surface2)',
+                          color: isSent ? 'var(--c-cream)' : 'var(--c-text)',
+                          position: 'relative'
+                        }}>
+                          <p style={{ 
+                            fontSize: '0.9rem', 
+                            lineHeight: 1.5,
+                            wordBreak: 'break-word',
+                            margin: 0
+                          }}>
+                            {m.content}
+                          </p>
+                          <div style={{
+                            fontSize: '0.7rem',
+                            color: isSent ? 'rgba(255,255,255,0.7)' : 'var(--c-muted)',
+                            marginTop: '0.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: isSent ? 'flex-end' : 'flex-start',
+                            gap: '0.25rem'
+                          }}>
+                            <span>{formatTime(m.created_at)}</span>
+                            {isSent && (
+                              <span style={{ 
+                                color: m.read_at ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.5)' 
+                              }}>
+                                {m.read_at ? '✓✓' : '✓'}
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-medium text-slate-900 truncate">{conv.user.name}</h3>
-                          <span className="text-xs text-slate-500 ml-2 flex-shrink-0">
-                            {formatTime(conv.last_message.created_at)}
-                          </span>
                         </div>
-                        <p className="text-sm text-slate-600 truncate">
-                          {conv.last_message.content}
-                        </p>
                       </div>
-                    </button>
-                  ))}
+                    )
+                  })}
+                  <div ref={bottomRef} />
                 </div>
               )}
             </div>
-          </div>
-          {/* Zone de conversation */}
-          <div className="flex-1 flex flex-col">
-            {activeUser ? (
-              <>
-                {/* Header conversation */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-white">
-                  <div className="flex items-center gap-3">
-                    <Avatar src={activeUser.avatar} name={activeUser.name} size="md" />
-                    <div>
-                      <h3 className="font-semibold text-slate-900">{activeUser.name}</h3>
-                      <p className="text-sm text-slate-500">{activeUser.email}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                      <Phone size={18} className="text-slate-600" />
-                    </button>
-                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                      <Video size={18} className="text-slate-600" />
-                    </button>
-                    <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                      <MoreVertical size={18} className="text-slate-600" />
-                    </button>
-                  </div>
+            
+            {/* Input desktop */}
+            <div style={{ 
+              padding: '1rem 1.5rem', 
+              borderTop: '1px solid var(--c-border)', 
+              background: 'var(--c-surface)' 
+            }}>
+              <form onSubmit={handleSend} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
+                <div style={{
+                  flex: 1,
+                  background: 'var(--c-bg)',
+                  borderRadius: '20px',
+                  border: '1px solid var(--c-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0.75rem 1rem',
+                  minHeight: '44px'
+                }}>
+                  <input 
+                    type="text" 
+                    value={input} 
+                    onChange={e => setInput(e.target.value)}
+                    placeholder="Your message here"
+                    style={{
+                      flex: 1,
+                      background: 'transparent',
+                      border: 'none',
+                      outline: 'none',
+                      color: 'var(--c-text)',
+                      fontSize: '0.9rem'
+                    }}
+                    disabled={sending}
+                  />
                 </div>
-
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-slate-50/50 to-white">
-                  {messages.length === 0 ? (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-                          <span className="text-2xl">👋</span>
-                        </div>
-                        <h3 className="font-medium text-slate-900 mb-1">Nouvelle conversation</h3>
-                        <p className="text-slate-600">Commencez la discussion avec {activeUser.name}</p>
-                      </div>
-                    </div>
+                <button 
+                  type="submit" 
+                  disabled={sending || !input.trim()}
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '20px',
+                    background: input.trim() ? 'var(--c-cyan)' : 'var(--c-surface2)',
+                    border: 'none',
+                    color: input.trim() ? 'var(--c-cream)' : 'var(--c-muted)',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: sending || !input.trim() ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  {sending ? (
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid transparent',
+                      borderTop: '2px solid currentColor',
+                      borderRadius: '50%'
+                    }} className="animate-spin" />
                   ) : (
-                    <div className="space-y-6">
-                      {messages.map(m => {
-                        const isSent = m.sender_id === user?.id
-                        return (
-                          <div key={m.id} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-md px-4 py-3 rounded-2xl ${
-                              isSent 
-                                ? 'bg-blue-500 text-white rounded-br-md shadow-sm' 
-                                : 'bg-white border border-slate-200 text-slate-900 rounded-bl-md shadow-sm'
-                            }`}>
-                              <p className="break-words leading-relaxed">{m.content}</p>
-                              <div className={`flex items-center gap-2 mt-2 text-xs ${
-                                isSent ? 'text-blue-100 justify-end' : 'text-slate-500 justify-start'
-                              }`}>
-                                <span>{formatTime(m.created_at)}</span>
-                                {isSent && (
-                                  <span className="text-blue-200">
-                                    {m.read_at ? '✓✓' : '✓'}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                      <div ref={bottomRef} />
-                    </div>
+                    <>
+                      <Send size={16} />
+                      Send
+                    </>
                   )}
-                </div>
-                {/* Input desktop */}
-                <div className="p-4 border-t border-slate-200 bg-white">
-                  <form onSubmit={handleSend} className="flex gap-4 items-end">
-                    <div className="flex-1 bg-slate-50 rounded-2xl border border-slate-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-                      <input 
-                        type="text" 
-                        value={input} 
-                        onChange={e => setInput(e.target.value)}
-                        placeholder="Tapez votre message..."
-                        className="w-full px-4 py-3 bg-transparent text-slate-900 placeholder-slate-500 outline-none"
-                        disabled={sending}
-                      />
-                    </div>
-                    <button 
-                      type="submit" 
-                      disabled={sending || !input.trim()}
-                      className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      {sending ? (
-                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        <>
-                          <Send size={16} />
-                          Envoyer
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </>
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-slate-50/50 to-white">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
-                    <span className="text-3xl">💬</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Sélectionnez une conversation</h3>
-                  <p className="text-slate-600 max-w-sm">
-                    Choisissez une conversation dans la liste pour commencer à discuter avec vos visiteurs.
-                  </p>
-                </div>
+                </button>
+              </form>
+            </div>
+          </>
+        ) : (
+          <div style={{ 
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            background: 'var(--c-bg)' 
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                width: '6rem',
+                height: '6rem',
+                background: 'var(--c-surface2)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1.5rem',
+                margin: '0 auto 1.5rem'
+              }}>
+                <span style={{ fontSize: '2.5rem' }}>💬</span>
               </div>
-            )}
+              <h3 style={{ 
+                fontSize: '1.25rem',
+                fontWeight: '600', 
+                color: 'var(--c-text)', 
+                marginBottom: '0.5rem' 
+              }}>
+                Select a conversation
+              </h3>
+              <p style={{ 
+                color: 'var(--c-sub)', 
+                maxWidth: '20rem' 
+              }}>
+                Choose a conversation from the list to start messaging with your visitors.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
