@@ -158,18 +158,23 @@ export default function DashboardPage() {
                     Top {chartData.length}
                   </span>
                 </div>
-                <div style={{ height: '16rem' }}>
+                <div style={{ height: isMobile ? '20rem' : '16rem' }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                    <BarChart data={chartData} margin={{ 
+                      top: 20, 
+                      right: isMobile ? 10 : 30, 
+                      left: isMobile ? 10 : 20, 
+                      bottom: isMobile ? 80 : 60 
+                    }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--c-border)" />
                       <XAxis 
                         dataKey="name" 
-                        tick={{ fill: 'var(--c-muted)', fontSize: 12 }} 
+                        tick={{ fill: 'var(--c-muted)', fontSize: isMobile ? 10 : 12 }} 
                         angle={-30} 
                         textAnchor="end" 
                         height={80} 
                       />
-                      <YAxis tick={{ fill: 'var(--c-muted)', fontSize: 12 }} />
+                      <YAxis tick={{ fill: 'var(--c-muted)', fontSize: isMobile ? 10 : 12 }} />
                       <Tooltip
                         contentStyle={{ 
                           background: 'var(--c-surface)', 

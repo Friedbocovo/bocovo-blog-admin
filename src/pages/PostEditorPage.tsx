@@ -117,17 +117,62 @@ export default function PostEditorPage() {
           </button>
           {isEdit && (
             <button onClick={() => handleSave()} disabled={saving}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(29,184,122,0.15)', color: 'var(--c-green)', border: '1px solid rgba(29,184,122,0.3)', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
-              <Save size={14} /> Enregistrer
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(29,184,122,0.15)', color: 'var(--c-green)', border: '1px solid rgba(29,184,122,0.3)', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition: 'all 0.2s' }}>
+              {saving ? (
+                <>
+                  <div style={{
+                    width: '14px',
+                    height: '14px',
+                    border: '2px solid currentColor',
+                    borderTop: '2px solid transparent',
+                    borderRadius: '50%'
+                  }} className="animate-spin" />
+                  Sauvegarde...
+                </>
+              ) : (
+                <>
+                  <Save size={14} /> Enregistrer
+                </>
+              )}
             </button>
           )}
           <button onClick={() => handleSave('draft')} disabled={saving}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: 'var(--c-surface)', color: 'var(--c-sub)', border: '1px solid var(--c-border)', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
-            <Save size={14} /> Brouillon
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 500, background: 'var(--c-surface)', color: 'var(--c-sub)', border: '1px solid var(--c-border)', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition: 'all 0.2s' }}>
+            {saving ? (
+              <>
+                <div style={{
+                  width: '14px',
+                  height: '14px',
+                  border: '2px solid currentColor',
+                  borderTop: '2px solid transparent',
+                  borderRadius: '50%'
+                }} className="animate-spin" />
+                Sauvegarde...
+              </>
+            ) : (
+              <>
+                <Save size={14} /> Brouillon
+              </>
+            )}
           </button>
           <button onClick={() => handleSave('published')} disabled={saving}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1.1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: 'var(--c-cyan-dim)', color: '#fff', border: 'none', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
-            <Send size={14} /> Publier
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1.1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: saving ? 'var(--c-surface2)' : 'var(--c-cyan-dim)', color: saving ? 'var(--c-muted)' : '#fff', border: 'none', cursor: saving ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
+            {saving ? (
+              <>
+                <div style={{
+                  width: '14px',
+                  height: '14px',
+                  border: '2px solid currentColor',
+                  borderTop: '2px solid transparent',
+                  borderRadius: '50%'
+                }} className="animate-spin" />
+                Publication...
+              </>
+            ) : (
+              <>
+                <Send size={14} /> Publier
+              </>
+            )}
           </button>
         </div>
       </div>
