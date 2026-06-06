@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Send, Search, ArrowLeft, Plus, MoreVertical } from 'lucide-react'
+import { Send, Search, ArrowLeft, MoreVertical } from 'lucide-react'
 import api from '../lib/api'
 import { createEcho } from '../lib/echo'
 import useAuthStore from '../stores/authStore'
@@ -134,8 +134,13 @@ export default function ChatPage() {
         {!activeUser ? (
           // Liste des conversations (mobile) - Design moderne
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {/* Header mobile moderne */}
+            {/* Header mobile moderne - FIXE */}
             <div style={{ 
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1000,
               background: 'var(--c-surface)', 
               borderBottom: '1px solid var(--c-border)', 
               padding: '1rem' 
@@ -188,7 +193,12 @@ export default function ChatPage() {
             </div>
             
             {/* Liste des conversations - Style moderne */}
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div style={{ 
+              flex: 1, 
+              overflowY: 'auto',
+              paddingTop: '140px', // Espace pour le header fixe
+              paddingBottom: '1rem'
+            }}>
               {filteredConversations.length === 0 ? (
                 <div style={{ 
                   display: 'flex', 
@@ -317,8 +327,13 @@ export default function ChatPage() {
         ) : (
           // Vue conversation (mobile) - Design moderne
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {/* Header conversation moderne */}
+            {/* Header conversation moderne - FIXE */}
             <div style={{ 
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1000,
               background: 'var(--c-surface)', 
               borderBottom: '1px solid var(--c-border)', 
               padding: '1rem', 
@@ -395,7 +410,9 @@ export default function ChatPage() {
             <div style={{ 
               flex: 1, 
               overflowY: 'auto', 
-              padding: '1rem', 
+              padding: '1rem',
+              paddingTop: '90px', // Espace pour le header fixe 
+              paddingBottom: '80px', // Espace pour l'input fixe
               background: 'var(--c-bg)' 
             }}>
               {messages.length === 0 ? (
@@ -473,8 +490,13 @@ export default function ChatPage() {
               )}
             </div>
             
-            {/* Input mobile moderne */}
+            {/* Input mobile moderne - FIXE */}
             <div style={{ 
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1000,
               background: 'var(--c-surface)', 
               borderTop: '1px solid var(--c-border)', 
               padding: '1rem' 
