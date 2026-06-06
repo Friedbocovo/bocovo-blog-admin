@@ -21,6 +21,7 @@ export default function PostEditorPage() {
   const [coverFile, setCoverFile] = useState<File | null>(null)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null)
   const [preview, setPreview] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -57,11 +58,12 @@ export default function PostEditorPage() {
     reader.readAsDataURL(file)
   }
 
-  const handleSave = async (status?: 'draft' | 'published') => {
+  const handleSave = async (status?: 'draft' | 'published', shouldNavigate: boolean = true) => {
     if (!title.trim()) return
     const statusToSave = status ?? currentStatus
     setSaving(true)
     setSaveError(null)
+    setSaveSuccess(null)
     try {
       const formData = new FormData()
       formData.append('title', title)
@@ -72,14 +74,28 @@ export default function PostEditorPage() {
       if (coverFile) formData.append('cover_image', coverFile)
       if (isEdit && id) {
         await api.put(`/admin/posts/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        if (!shouldNavigate) {
+          setSaveSuccess(
+            statusToSave === 'published' 
+              ? 'Article publié avec succès !' 
+              : 'Modifications enregistrées avec succès !'
+          )
+          setCurrentStatus(statusToSave)
+          // Masquer le message après 3 secondes
+          setTimeout(() => setSaveSuccess(null), 3000)
+        }
       } else {
         await api.post('/admin/posts', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       }
-      navigate('/posts')
+      if (shouldNavigate) {
+        navigate('/posts')
+      }
     } catch (e: any) {
       const msg = e?.response?.data?.message || e?.message || 'Erreur lors de la sauvegarde'
       setSaveError(msg)
-    } finally { setSaving(false) }
+    } finally { 
+      setSaving(false) 
+    }
   }
 
   const handleAddTag = () => {
@@ -100,6 +116,11 @@ export default function PostEditorPage() {
           ⚠️ {saveError}
         </div>
       )}
+      {saveSuccess && (
+        <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(29,184,122,0.1)', color: 'var(--c-green)', border: '1px solid rgba(29,184,122,0.2)', fontSize: '0.875rem' }}>
+          ✅ {saveSuccess}
+        </div>
+      )}
       {/* Header */}
       <div style={{ marginBottom: '1.5rem' }}>
         <div>
@@ -118,7 +139,7 @@ export default function PostEditorPage() {
             {preview ? <><EyeOff size={14} /> Éditer</> : <><Eye size={14} /> Aperçu</>}
           </button>
           {isEdit && (
-            <button onClick={() => handleSave()} disabled={saving}
+            <button onClick={() => handleSave(currentStatus, false)} disabled={saving}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, background: 'rgba(29,184,122,0.15)', color: 'var(--c-green)', border: '1px solid rgba(29,184,122,0.3)', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, transition: 'all 0.2s' }}>
               {saving ? (
                 <>
@@ -269,7 +290,7 @@ export default function PostEditorPage() {
       {/* Bouton Publier en bas - Pleine largeur */}
       {!preview && (
         <div style={{ marginTop: '2rem' }}>
-          <button onClick={() => handleSave('published')} disabled={saving}
+          <button onClick={() => handleSave('published', true)} disabled={saving}
             style={{ 
               width: '100%',
               display: 'inline-flex', 
