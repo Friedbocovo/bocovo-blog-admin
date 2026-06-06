@@ -196,7 +196,7 @@ export default function ChatPage() {
             <div style={{ 
               flex: 1, 
               overflowY: 'auto',
-              paddingTop: '140px', // Espace pour le header fixe
+              paddingTop: '40px', // Espace pour le header fixe
               paddingBottom: '1rem'
             }}>
               {filteredConversations.length === 0 ? (
@@ -476,7 +476,7 @@ export default function ChatPage() {
                           }}>
                             <span>{formatTime(m.created_at)}</span>
                             {isSent && (
-                              <span style={{ color: m.read_at ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.5)' }}>
+                              <span style={{ color: m.read_at ? 'rgba(21, 24, 22, 0.8)' : 'rgba(255,255,255,0.5)' }}>
                                 {m.read_at ? '✓✓' : '✓'}
                               </span>
                             )}
