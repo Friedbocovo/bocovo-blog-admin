@@ -410,8 +410,8 @@ export default function ChatPage() {
             <div style={{ 
               flex: 1, 
               overflowY: 'auto', 
-              padding: '0.5rem',
-              paddingTop: '50px', // Espace pour le header fixe 
+              padding: '10px',
+              paddingTop: '30px', // Espace pour le header fixe 
               paddingBottom: '80px', // Espace pour l'input fixe
               background: 'var(--c-bg)' 
             }}>
