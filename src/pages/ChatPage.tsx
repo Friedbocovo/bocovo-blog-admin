@@ -196,7 +196,7 @@ export default function ChatPage() {
             <div style={{ 
               flex: 1, 
               overflowY: 'auto',
-              paddingTop: '40px', // Espace pour le header fixe
+              paddingTop: '60px', // Espace pour le header fixe
               paddingBottom: '1rem'
             }}>
               {filteredConversations.length === 0 ? (
@@ -391,19 +391,6 @@ export default function ChatPage() {
                 </p>
               </div>
               
-              <button style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: 'var(--c-bg)',
-                border: '1px solid var(--c-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}>
-                <MoreVertical size={18} style={{ color: 'var(--c-text)' }} />
-              </button>
             </div>
 
             {/* Messages - Design moderne */}
