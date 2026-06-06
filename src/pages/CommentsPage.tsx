@@ -385,11 +385,21 @@ export default function CommentsPage() {
                     {comment.content}
                   </p>
                 </div>
-                {/* Formulaire de réponse */}
+                {/* Formulaire de réponse - Style moderne */}
                 {replyForms[comment.id] !== undefined && (
-                  <div className="bg-blue-50 border-l-4 border-blue-400 rounded-lg p-4 mb-4">
-                    <div className="flex flex-col gap-3">
-                      <label className="text-sm font-medium text-blue-800">
+                  <div style={{ 
+                    background: 'rgba(26, 155, 196, 0.05)', 
+                    border: '1px solid rgba(26, 155, 196, 0.2)', 
+                    borderRadius: '12px', 
+                    padding: '1rem', 
+                    marginBottom: '1rem' 
+                  }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <label style={{ 
+                        fontSize: '0.875rem', 
+                        fontWeight: '500', 
+                        color: 'var(--c-cyan)' 
+                      }}>
                         Répondre à {comment.user?.name}
                       </label>
                       <textarea 
@@ -397,23 +407,60 @@ export default function CommentsPage() {
                         onChange={e => setReplyForms(p => ({ ...p, [comment.id]: e.target.value }))}
                         placeholder="Tapez votre réponse... (@mention supportée)"
                         rows={3}
-                        className="w-full px-4 py-3 bg-white border border-blue-200 rounded-lg text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          background: 'var(--c-bg)',
+                          border: '1px solid var(--c-border)',
+                          borderRadius: '8px',
+                          color: 'var(--c-text)',
+                          fontSize: '0.875rem',
+                          resize: 'none',
+                          fontFamily: 'inherit'
+                        }}
                       />
-                      <div className="flex items-center justify-end gap-2">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
                         <button 
                           onClick={() => setReplyForms(p => ({ ...p, [comment.id]: undefined }))}
-                          className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors"
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: 'var(--c-sub)',
+                            background: 'transparent',
+                            transition: 'color 0.2s'
+                          }}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-text)'}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-sub)'}
                         >
                           Annuler
                         </button>
                         <button 
                           onClick={() => handleReply(comment.id)} 
                           disabled={submitting === comment.id || !replyForms[comment.id]?.trim()}
-                          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: (submitting === comment.id || !replyForms[comment.id]?.trim()) ? 'var(--c-surface2)' : 'var(--c-cyan)',
+                            color: (submitting === comment.id || !replyForms[comment.id]?.trim()) ? 'var(--c-muted)' : 'var(--c-cream)',
+                            borderRadius: '8px',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            transition: 'all 0.2s',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            cursor: (submitting === comment.id || !replyForms[comment.id]?.trim()) ? 'not-allowed' : 'pointer'
+                          }}
                         >
                           {submitting === comment.id ? (
                             <>
-                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              <div style={{
+                                width: '1rem',
+                                height: '1rem',
+                                border: '2px solid currentColor',
+                                borderTop: '2px solid transparent',
+                                borderRadius: '50%'
+                              }} className="animate-spin" />
                               Envoi...
                             </>
                           ) : (
@@ -428,48 +475,93 @@ export default function CommentsPage() {
                   </div>
                 )}
 
-                {/* Réponses */}
+                {/* Réponses - Style moderne */}
                 {comment.replies && comment.replies.length > 0 && (
                   <div>
                     <button
                       onClick={() => toggleExpanded(comment.id)}
-                      className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-800 mb-3 transition-colors"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        color: 'var(--c-cyan)',
+                        marginBottom: '0.75rem',
+                        transition: 'color 0.2s',
+                        background: 'transparent'
+                      }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-cyan-dim)'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'var(--c-cyan)'}
                     >
-                      <div className={`transition-transform duration-200 ${
-                        expandedComments.has(comment.id) ? 'rotate-90' : ''
-                      }`}>
+                      <div style={{
+                        transition: 'transform 0.2s',
+                        transform: expandedComments.has(comment.id) ? 'rotate(90deg)' : 'rotate(0deg)'
+                      }}>
                         ▶
                       </div>
                       {comment.replies.length} réponse{comment.replies.length > 1 ? 's' : ''}
                     </button>
                     
                     {expandedComments.has(comment.id) && (
-                      <div className="space-y-3 pl-6 border-l-2 border-slate-200">
+                      <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '0.75rem', 
+                        paddingLeft: '1.5rem', 
+                        borderLeft: '2px solid var(--c-border)' 
+                      }}>
                         {comment.replies.map(reply => (
-                          <div key={reply.id} className="bg-white border border-slate-200 rounded-lg p-4">
-                            <div className="flex items-center gap-3 mb-3">
+                          <div key={reply.id} style={{ 
+                            background: 'var(--c-bg)', 
+                            border: '1px solid var(--c-border)', 
+                            borderRadius: '8px', 
+                            padding: '1rem' 
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
                               <Avatar 
                                 src={reply.user?.avatar} 
                                 name={reply.user?.name ?? 'Admin'} 
                                 size="sm" 
                               />
-                              <div>
-                                <h4 className="font-medium text-slate-900 text-sm">
+                              <div style={{ flex: 1 }}>
+                                <h4 style={{ 
+                                  fontWeight: '500', 
+                                  color: 'var(--c-text)', 
+                                  fontSize: '0.875rem',
+                                  fontFamily: 'var(--font-head)'
+                                }}>
                                   {reply.user?.name ?? 'Admin'}
                                 </h4>
-                                <span className="text-xs text-slate-500">
+                                <span style={{ 
+                                  fontSize: '0.75rem', 
+                                  color: 'var(--c-muted)' 
+                                }}>
                                   {formatDate(reply.created_at)}
                                 </span>
                               </div>
                               <button 
                                 onClick={() => handleDelete(reply.id)}
-                                className="ml-auto p-1.5 hover:bg-red-50 text-red-600 rounded transition-colors"
+                                style={{
+                                  padding: '0.5rem',
+                                  background: 'rgba(224, 82, 82, 0.1)',
+                                  color: 'var(--c-red)',
+                                  borderRadius: '6px',
+                                  transition: 'background-color 0.2s'
+                                }}
                                 title="Supprimer la réponse"
+                                onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(224, 82, 82, 0.2)'}
+                                onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(224, 82, 82, 0.1)'}
                               >
                                 <Trash2 size={14} />
                               </button>
                             </div>
-                            <p className="text-slate-700 text-sm leading-relaxed break-words">
+                            <p style={{ 
+                              color: 'var(--c-text)', 
+                              fontSize: '0.875rem', 
+                              lineHeight: 1.5, 
+                              wordBreak: 'break-word' 
+                            }}>
                               {reply.content}
                             </p>
                           </div>

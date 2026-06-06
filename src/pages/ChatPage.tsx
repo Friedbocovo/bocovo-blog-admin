@@ -154,19 +154,7 @@ export default function ChatPage() {
                 }}>
                   Messages
                 </h1>
-                <button style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  background: 'var(--c-cyan)',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}>
-                  <Plus size={20} style={{ color: 'var(--c-cream)' }} />
-                </button>
+               
               </div>
               
               {/* Barre de recherche moderne */}
@@ -591,19 +579,7 @@ export default function ChatPage() {
             }}>
               Messages ({filteredConversations.length})
             </h1>
-            <button style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '6px',
-              background: 'var(--c-cyan)',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}>
-              <Plus size={16} style={{ color: 'var(--c-cream)' }} />
-            </button>
+            
           </div>
           
           {/* Barre de recherche */}
