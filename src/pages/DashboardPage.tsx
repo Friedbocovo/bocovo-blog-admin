@@ -40,6 +40,15 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Détection mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     Promise.all([
@@ -117,7 +126,7 @@ export default function DashboardPage() {
 
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', 
+            gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 2fr) minmax(0, 1fr)', 
             gap: '2rem', 
             marginBottom: '2rem' 
           }}>
